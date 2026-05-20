@@ -2,17 +2,36 @@
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import type { Locale } from '../../i18n/ui';
+import { siteConfig } from '../../data/site';
+import { getAlternateLocaleUrl } from '../../i18n/utils';
 import '../../styles/global.css';
 
 interface Props {
   title: string;
   description: string;
   lang?: Locale;
+  canonicalPath?: string;
+  image?: string;
+  type?: string;
 }
 
-const { title, description, lang = 'en' } = Astro.props;
-const siteName = 'Nikita Paladi';
-const pageTitle = title === siteName ? siteName : `${title} | ${siteName}`;
+const {
+  title,
+  description,
+  lang = 'en',
+  canonicalPath = Astro.url.pathname,
+  image = '/images/brand/social-preview.png',
+  type = 'website',
+} = Astro.props;
+const siteName = siteConfig.siteName;
+const pageTitle = title === siteName ? siteConfig.siteTitle : `${title} | ${siteName}`;
+const normalizedPath = canonicalPath === '/' ? '/' : canonicalPath.replace(/\/$/, '');
+const canonicalUrl = new URL(normalizedPath, siteConfig.siteUrl).toString();
+const imageUrl = image.startsWith('http') ? image : new URL(image, siteConfig.siteUrl).toString();
+const ogLocale = lang === 'ru' ? 'ru_RU' : 'en_US';
+const alternateLang = lang === 'ru' ? 'en' : 'ru';
+const alternatePath = getAlternateLocaleUrl(normalizedPath, lang);
+const alternateUrl = new URL(alternatePath, siteConfig.siteUrl).toString();
 ---
 
 <!doctype html>
@@ -21,12 +40,25 @@ const pageTitle = title === siteName ? siteName : `${title} | ${siteName}`;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="author" content={siteConfig.author} />
+    <meta name="robots" content="index, follow" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#050607" />
-    <meta property="og:type" content="website" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+    <link rel="alternate" hreflang={alternateLang} href={alternateUrl} />
+    <link rel="alternate" hreflang="x-default" href={lang === 'en' ? canonicalUrl : alternateUrl} />
+    <meta property="og:type" content={type} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content={siteName} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
     <link rel="icon" type="image/png" href="/images/brand/logo-p.png" />
     <title>{pageTitle}</title>
   </head>

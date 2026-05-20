@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+
+const lang = 'en';
+---
+
+<BaseLayout
+  title="Now"
+  description="A short current-status page for Nikita Paladi and the personal archive."
+  lang={lang}
+  canonicalPath="/now"
+>
+  <section class="page-hero">
+    <p class="eyebrow">Now</p>
+    <h1>Now</h1>
+    <p>A simple place for current focus, active projects, and notes that can be refined later.</p>
+  </section>
+
+  <section class="page-section content-list" aria-label="Now sections">
+    <article class="text-panel glass-card">
+      <h2>Current focus</h2>
+      <p>Building out the personal archive, improving its content structure, and keeping the site calm and durable.</p>
+    </article>
+  </section>
+</BaseLayout>

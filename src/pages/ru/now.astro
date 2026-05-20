@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+
+const lang = 'ru';
+---
+
+<BaseLayout
+  title="Сейчас"
+  description="Короткая страница текущего фокуса Nikita Paladi и личного архива."
+  lang={lang}
+  canonicalPath="/ru/now"
+>
+  <section class="page-hero">
+    <p class="eyebrow">Сейчас</p>
+    <h1>Сейчас</h1>
+    <p>Простое место для текущего фокуса, активных проектов и заметок, которые можно уточнить позже.</p>
+  </section>
+
+  <section class="page-section content-list" aria-label="Сейчас">
+    <article class="text-panel glass-card">
+      <h2>Текущий фокус</h2>
+      <p>Развитие личного архива, улучшение структуры контента и спокойная, долговечная форма сайта.</p>
+    </article>
+  </section>
+</BaseLayout>

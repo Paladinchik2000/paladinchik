@@ -21,12 +21,16 @@ const coverStyle = place.data.cover ? `--cover-image: url("${place.data.cover}")
 const gallery = place.data.gallery ?? [];
 const galleryTitle = 'Gallery';
 const galleryEmptyText = 'Gallery images will be added later.';
+const slug = getContentSlug(place);
 ---
 
 <BaseLayout
   title={place.data.title}
   description={place.data.description ?? `${place.data.title} place note.`}
   lang={lang}
+  canonicalPath={`/places/${slug}`}
+  image={place.data.cover}
+  type="article"
 >
   <a class="back-link" href="/places">{t('common.back.places')}</a>
 
