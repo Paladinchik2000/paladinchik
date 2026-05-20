@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../components/layout/BaseLayout.astro';
 import ArchiveCard from '../../../components/ui/ArchiveCard.astro';
+import ArchiveFilters from '../../../components/ui/ArchiveFilters.astro';
 import { getContentSlug, useTranslations } from '../../../i18n/utils';
 
 const lang = 'ru';
@@ -11,6 +12,13 @@ const movies = (await getCollection('movies')).filter((movie) => movie.data.lang
 );
 
 const getEntrySlug = (entry) => getContentSlug(entry);
+const genres = [...new Set(movies.flatMap((movie) => movie.data.genres ?? []))].sort((a, b) => a.localeCompare(b));
+const sortOptions = [
+  { value: 'newest', label: 'Сначала новые' },
+  { value: 'oldest', label: 'Сначала старые' },
+  { value: 'rating', label: 'С высокой оценкой' },
+  { value: 'title', label: 'По названию' },
+];
 ---
 
 <BaseLayout title="Кино" description="Фильмы, которые я смотрел, запомнил, ставил под вопрос или пересматривал." lang={lang}>
@@ -20,7 +28,19 @@ const getEntrySlug = (entry) => getContentSlug(entry);
     <p>Фильмы, которые я смотрел, запомнил, ставил под вопрос или пересматривал.</p>
   </section>
 
-  <section class="page-section placeholder-grid" aria-label="Записи о кино">
+  <ArchiveFilters
+    targetId="cinema-archive"
+    genres={genres}
+    searchLabel="Поиск"
+    searchPlaceholder="Искать фильмы, заметки или жанры"
+    filterLabel="Жанр"
+    allLabel="Все жанры"
+    favoriteLabel="Только избранное"
+    sortLabel="Сортировка"
+    sortOptions={sortOptions}
+  />
+
+  <section id="cinema-archive" class="page-section placeholder-grid" aria-label="Записи о кино">
     {
       movies.map((movie) => (
         <ArchiveCard
@@ -33,8 +53,17 @@ const getEntrySlug = (entry) => getContentSlug(entry);
           chips={movie.data.genres}
           actionLabel={t('common.readNote')}
           noCoverLabel={t('common.noCover')}
+          filterText={[movie.data.title, movie.data.description, ...(movie.data.genres ?? [])].filter(Boolean).join(' ')}
+          filterGroups={movie.data.genres}
+          filterFavorite={movie.data.favorite}
+          sortTitle={movie.data.title}
+          sortYear={movie.data.year}
+          sortRating={movie.data.rating}
         />
       ))
     }
   </section>
+  <div class="archive-empty-state glass-card" data-archive-empty="cinema-archive" hidden>
+    <p>Нет записей по выбранным фильтрам.</p>
+  </div>
 </BaseLayout>
