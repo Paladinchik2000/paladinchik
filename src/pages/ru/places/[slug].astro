@@ -19,9 +19,17 @@ const { place } = Astro.props;
 const { Content } = await render(place);
 const coverStyle = place.data.cover ? `--cover-image: url("${place.data.cover}")` : undefined;
 const gallery = place.data.gallery ?? [];
+const slug = getContentSlug(place);
 ---
 
-<BaseLayout title={place.data.title} description={place.data.description ?? `${place.data.title} заметка о месте.`} lang={lang}>
+<BaseLayout
+  title={place.data.title}
+  description={place.data.description ?? `${place.data.title} заметка о месте.`}
+  lang={lang}
+  canonicalPath={`/ru/places/${slug}`}
+  image={place.data.cover}
+  type="article"
+>
   <a class="back-link" href="/ru/places">{t('common.back.places')}</a>
 
   <div class:list={['detail-cover', { 'has-cover': place.data.cover }]} style={coverStyle} aria-hidden="true">

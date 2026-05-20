@@ -18,12 +18,16 @@ export async function getStaticPaths() {
 const { movie } = Astro.props;
 const { Content } = await render(movie);
 const coverStyle = movie.data.cover ? `--cover-image: url("${movie.data.cover}")` : undefined;
+const slug = getContentSlug(movie);
 ---
 
 <BaseLayout
   title={movie.data.title}
   description={movie.data.description ?? `${movie.data.title} film note.`}
   lang={lang}
+  canonicalPath={`/cinema/${slug}`}
+  image={movie.data.cover}
+  type="article"
 >
   <a class="back-link" href="/cinema">{t('common.back.cinema')}</a>
 

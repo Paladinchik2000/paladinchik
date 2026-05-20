@@ -18,9 +18,17 @@ export async function getStaticPaths() {
 const { book } = Astro.props;
 const { Content } = await render(book);
 const coverStyle = book.data.cover ? `--cover-image: url("${book.data.cover}")` : undefined;
+const slug = getContentSlug(book);
 ---
 
-<BaseLayout title={book.data.title} description={book.data.description ?? `${book.data.title} заметка о книге.`} lang={lang}>
+<BaseLayout
+  title={book.data.title}
+  description={book.data.description ?? `${book.data.title} заметка о книге.`}
+  lang={lang}
+  canonicalPath={`/ru/library/${slug}`}
+  image={book.data.cover}
+  type="article"
+>
   <a class="back-link" href="/ru/library">{t('common.back.library')}</a>
 
   <div class:list={['detail-cover', { 'has-cover': book.data.cover }]} style={coverStyle} aria-hidden="true">

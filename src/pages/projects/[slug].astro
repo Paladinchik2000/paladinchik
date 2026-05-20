@@ -22,12 +22,16 @@ const dateRange = [project.data.startDate, project.data.endDate].filter(Boolean)
 const stack = project.data.stack ?? [];
 const tags = project.data.tags ?? [];
 const highlights = project.data.highlights ?? [];
+const slug = getContentSlug(project);
 ---
 
 <BaseLayout
   title={project.data.title}
   description={project.data.description ?? `${project.data.title} project note.`}
   lang={lang}
+  canonicalPath={`/projects/${slug}`}
+  image={project.data.cover}
+  type="article"
 >
   <a class="back-link" href="/projects">{t('common.back.projects')}</a>
 
