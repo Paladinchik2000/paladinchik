@@ -1,0 +1,131 @@
+---
+interface SortOption {
+  value: 'newest' | 'oldest' | 'rating' | 'title';
+  label: string;
+}
+
+interface Props {
+  targetId: string;
+  genres: string[];
+  searchLabel: string;
+  searchPlaceholder: string;
+  filterLabel: string;
+  allLabel: string;
+  favoriteLabel: string;
+  sortLabel: string;
+  sortOptions: SortOption[];
+}
+
+const {
+  targetId,
+  genres,
+  searchLabel,
+  searchPlaceholder,
+  filterLabel,
+  allLabel,
+  favoriteLabel,
+  sortLabel,
+  sortOptions,
+} = Astro.props;
+---
+
+<section class="archive-filters glass-card" data-archive-filter-root data-target={targetId}>
+  <label>
+    <span>{searchLabel}</span>
+    <input type="search" placeholder={searchPlaceholder} data-archive-search />
+  </label>
+
+  <label>
+    <span>{filterLabel}</span>
+    <select data-archive-group>
+      <option value="">{allLabel}</option>
+      {genres.map((genre) => <option value={genre}>{genre}</option>)}
+    </select>
+  </label>
+
+  <label>
+    <span>{sortLabel}</span>
+    <select data-archive-sort>
+      {sortOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+    </select>
+  </label>
+
+  <label class="filter-toggle">
+    <input type="checkbox" data-archive-favorite />
+    <span>{favoriteLabel}</span>
+  </label>
+</section>
+
+<script>
+  const normalizeArchiveValue = (value) => String(value || '').trim().toLocaleLowerCase();
+
+  const initializeArchiveFilters = (root) => {
+    const targetId = root.dataset.target;
+    const list = targetId ? document.getElementById(targetId) : null;
+    if (!list) return;
+
+    const items = Array.from(list.querySelectorAll('[data-archive-item]'));
+    const searchInput = root.querySelector('[data-archive-search]');
+    const groupSelect = root.querySelector('[data-archive-group]');
+    const favoriteInput = root.querySelector('[data-archive-favorite]');
+    const sortSelect = root.querySelector('[data-archive-sort]');
+    const emptyState = document.querySelector(`[data-archive-empty="${targetId}"]`);
+
+    const sortItems = (entries, sortValue) => {
+      return [...entries].sort((a, b) => {
+        if (sortValue === 'oldest') {
+          return Number(a.dataset.year || 0) - Number(b.dataset.year || 0);
+        }
+
+        if (sortValue === 'rating') {
+          return Number(b.dataset.rating || 0) - Number(a.dataset.rating || 0);
+        }
+
+        if (sortValue === 'title') {
+          return String(a.dataset.title || '').localeCompare(String(b.dataset.title || ''));
+        }
+
+        return Number(b.dataset.year || 0) - Number(a.dataset.year || 0);
+      });
+    };
+
+    const update = () => {
+      const query = normalizeArchiveValue(searchInput?.value);
+      const group = normalizeArchiveValue(groupSelect?.value);
+      const favoriteOnly = Boolean(favoriteInput?.checked);
+      const sortValue = sortSelect?.value || 'newest';
+
+      const visibleItems = items.filter((item) => {
+        const searchText = normalizeArchiveValue(item.dataset.search);
+        const groups = normalizeArchiveValue(item.dataset.groups).split('|').filter(Boolean);
+        const matchesSearch = !query || searchText.includes(query);
+        const matchesGroup = !group || groups.includes(group);
+        const matchesFavorite = !favoriteOnly || item.dataset.favorite === 'true';
+
+        return matchesSearch && matchesGroup && matchesFavorite;
+      });
+
+      const sortedItems = sortItems(visibleItems, sortValue);
+      const visibleSet = new Set(sortedItems);
+
+      items.forEach((item) => {
+        item.hidden = !visibleSet.has(item);
+      });
+
+      sortedItems.forEach((item) => list.appendChild(item));
+
+      if (emptyState) {
+        emptyState.hidden = sortedItems.length > 0;
+      }
+    };
+
+    [searchInput, groupSelect, favoriteInput, sortSelect].forEach((control) => {
+      control?.addEventListener('input', update);
+      control?.addEventListener('change', update);
+    });
+
+    update();
+  };
+
+  document.querySelectorAll('[data-archive-filter-root]').forEach(initializeArchiveFilters);
+</script>

@@ -9,6 +9,12 @@ interface Props {
   chips?: string[];
   actionLabel?: string;
   noCoverLabel?: string;
+  filterText?: string;
+  filterGroups?: string[];
+  filterFavorite?: boolean;
+  sortTitle?: string;
+  sortYear?: number;
+  sortRating?: number;
 }
 
 const {
@@ -21,13 +27,29 @@ const {
   chips = [],
   actionLabel = 'Read note',
   noCoverLabel = 'No cover yet',
+  filterText,
+  filterGroups = [],
+  filterFavorite = false,
+  sortTitle = title,
+  sortYear,
+  sortRating,
 } = Astro.props;
 
 const visibleMeta = meta.filter(Boolean);
 const coverStyle = cover ? `--cover-image: url("${cover}")` : undefined;
 ---
 
-<a class="archive-card archive-entry-card glass-card" href={href}>
+<a
+  class="archive-card archive-entry-card glass-card"
+  href={href}
+  data-archive-item
+  data-search={filterText}
+  data-groups={filterGroups.join('|')}
+  data-favorite={String(filterFavorite)}
+  data-title={sortTitle}
+  data-year={sortYear}
+  data-rating={sortRating}
+>
   <div class:list={['archive-cover', { 'has-cover': cover }]} style={coverStyle} aria-hidden="true">
     {!cover && <span>{noCoverLabel}</span>}
   </div>

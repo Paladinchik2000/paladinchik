@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import ArchiveCard from '../../components/ui/ArchiveCard.astro';
+import ArchiveFilters from '../../components/ui/ArchiveFilters.astro';
 import { getContentSlug, useTranslations } from '../../i18n/utils';
 
 const lang = 'en';
@@ -11,6 +12,13 @@ const books = (await getCollection('books')).filter((book) => book.data.lang ===
 );
 
 const getEntrySlug = (entry) => getContentSlug(entry);
+const genres = [...new Set(books.flatMap((book) => book.data.genres ?? []))].sort((a, b) => a.localeCompare(b));
+const sortOptions = [
+  { value: 'newest', label: 'Newest first' },
+  { value: 'oldest', label: 'Oldest first' },
+  { value: 'rating', label: 'Highest rated' },
+  { value: 'title', label: 'Title A-Z' },
+];
 ---
 
 <BaseLayout
@@ -24,7 +32,19 @@ const getEntrySlug = (entry) => getContentSlug(entry);
     <p>Books, notes, ideas, and short reflections.</p>
   </section>
 
-  <section class="page-section placeholder-grid" aria-label="Library entries">
+  <ArchiveFilters
+    targetId="library-archive"
+    genres={genres}
+    searchLabel="Search"
+    searchPlaceholder="Search books, authors, notes, or genres"
+    filterLabel="Genre"
+    allLabel="All genres"
+    favoriteLabel="Favorites only"
+    sortLabel="Sort"
+    sortOptions={sortOptions}
+  />
+
+  <section id="library-archive" class="page-section placeholder-grid" aria-label="Library entries">
     {
       books.map((book) => (
         <ArchiveCard
@@ -37,8 +57,17 @@ const getEntrySlug = (entry) => getContentSlug(entry);
           chips={book.data.genres}
           actionLabel={t('common.readNote')}
           noCoverLabel={t('common.noCover')}
+          filterText={[book.data.title, book.data.author, book.data.description, ...(book.data.genres ?? [])].filter(Boolean).join(' ')}
+          filterGroups={book.data.genres}
+          filterFavorite={book.data.favorite}
+          sortTitle={book.data.title}
+          sortYear={book.data.year}
+          sortRating={book.data.rating}
         />
       ))
     }
   </section>
+  <div class="archive-empty-state glass-card" data-archive-empty="library-archive" hidden>
+    <p>No entries match your filters.</p>
+  </div>
 </BaseLayout>

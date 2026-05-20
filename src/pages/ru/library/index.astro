@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../components/layout/BaseLayout.astro';
 import ArchiveCard from '../../../components/ui/ArchiveCard.astro';
+import ArchiveFilters from '../../../components/ui/ArchiveFilters.astro';
 import { getContentSlug, useTranslations } from '../../../i18n/utils';
 
 const lang = 'ru';
@@ -11,6 +12,13 @@ const books = (await getCollection('books')).filter((book) => book.data.lang ===
 );
 
 const getEntrySlug = (entry) => getContentSlug(entry);
+const genres = [...new Set(books.flatMap((book) => book.data.genres ?? []))].sort((a, b) => a.localeCompare(b));
+const sortOptions = [
+  { value: 'newest', label: 'Сначала новые' },
+  { value: 'oldest', label: 'Сначала старые' },
+  { value: 'rating', label: 'С высокой оценкой' },
+  { value: 'title', label: 'По названию' },
+];
 ---
 
 <BaseLayout title="Библиотека" description="Книги, заметки, идеи и короткие размышления." lang={lang}>
@@ -20,7 +28,19 @@ const getEntrySlug = (entry) => getContentSlug(entry);
     <p>Книги, заметки, идеи и короткие размышления.</p>
   </section>
 
-  <section class="page-section placeholder-grid" aria-label="Записи библиотеки">
+  <ArchiveFilters
+    targetId="library-archive"
+    genres={genres}
+    searchLabel="Поиск"
+    searchPlaceholder="Искать книги, авторов, заметки или жанры"
+    filterLabel="Жанр"
+    allLabel="Все жанры"
+    favoriteLabel="Только избранное"
+    sortLabel="Сортировка"
+    sortOptions={sortOptions}
+  />
+
+  <section id="library-archive" class="page-section placeholder-grid" aria-label="Записи библиотеки">
     {
       books.map((book) => (
         <ArchiveCard
@@ -33,8 +53,17 @@ const getEntrySlug = (entry) => getContentSlug(entry);
           chips={book.data.genres}
           actionLabel={t('common.readNote')}
           noCoverLabel={t('common.noCover')}
+          filterText={[book.data.title, book.data.author, book.data.description, ...(book.data.genres ?? [])].filter(Boolean).join(' ')}
+          filterGroups={book.data.genres}
+          filterFavorite={book.data.favorite}
+          sortTitle={book.data.title}
+          sortYear={book.data.year}
+          sortRating={book.data.rating}
         />
       ))
     }
   </section>
+  <div class="archive-empty-state glass-card" data-archive-empty="library-archive" hidden>
+    <p>Нет записей по выбранным фильтрам.</p>
+  </div>
 </BaseLayout>
