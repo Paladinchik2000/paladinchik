@@ -6,6 +6,7 @@ export const previewUrl = 'https://paladinchik.vercel.app';
 export const author = 'Nikita Paladi';
 export const defaultLocale = 'en';
 export const locales = ['en', 'ru'] as const;
+export const defaultSocialImage = '/images/brand/social-preview.png';
 export const social = {
   github: 'https://github.com/Paladinchik2000',
   youtube: 'https://www.youtube.com/@paladinchik2000',
@@ -22,5 +23,6 @@ export const siteConfig = {
   author,
   defaultLocale,
   locales,
+  defaultSocialImage,
   social,
 } as const;
