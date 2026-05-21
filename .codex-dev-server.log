@@ -1,0 +1,39 @@
+
+> nikita-archive@0.0.1 dev
+> astro dev --host 127.0.0.1
+
+[vite] connected.
+[2m13:51:55[22m [34m[types][39m Generated [2m1ms[22m
+[vite] connected.
+[2m13:51:56[22m [34m[content][39m Syncing content
+[2m13:51:56[22m [34m[content][39m Synced content
+[42m[1m astro [22m[49m [32mv6.3.1[39m [2mready in[22m 2152 [2mms[22m
+[2m┃[22m Local    [36mhttp://127.0.0.1:4321/[39m
+[2m13:51:56[22m [32mwatching for file changes...[39m
+[2m13:55:18[22m [34m[200][39m / [2m50ms[22m
+[2m13:55:38[22m [34m[200][39m /about [2m16ms[22m
+[2m13:55:41[22m [34m[200][39m /cinema [2m156ms[22m
+[2m13:55:42[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m5ms[22m
+[2m13:55:42[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m2ms[22m
+[2m13:55:42[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m1ms[22m
+[2m13:55:42[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m2ms[22m
+[2m13:55:48[22m [34m[200][39m /library [2m15ms[22m
+[2m13:55:48[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m1ms[22m
+[2m13:55:48[22m [33m[404][39m /images/books/meditations/cover.jpg [2m1ms[22m
+[2m13:55:48[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m2ms[22m
+[2m13:55:48[22m [33m[404][39m /images/books/meditations/cover.jpg [2m1ms[22m
+[2m13:55:49[22m [34m[200][39m /places [2m20ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/rome/cover.jpg [2m2ms[22m
+[2m13:55:50[22m [34m[vite][39m [32m✨ new dependencies optimized: [33mleaflet[32m[39m
+[2m13:55:50[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[2m13:55:50[22m [34m[200][39m /places [2m6ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:55:50[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m13:55:54[22m [34m[200][39m /projects [2m16ms[22m
+[2m13:55:56[22m [34m[200][39m /ru/projects [2m20ms[22m
+[2m13:55:58[22m [34m[200][39m /ru [2m20ms[22m
