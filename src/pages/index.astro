@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../components/layout/BaseLayout.astro';
 import Card from '../components/ui/Card.astro';
+import BrandLogo from '../components/ui/BrandLogo.astro';
 import { useTranslations } from '../i18n/utils';
 
 const lang = 'en';
@@ -53,8 +54,8 @@ const sections = [
   canonicalPath="/"
 >
   <section class="hero" aria-labelledby="home-title">
-    <div>
-      <img class="hero-mark" src="/images/brand/logo-p.png" alt="" width="136" height="136" />
+    <div class="hero-content">
+      <BrandLogo variant="hero" />
       <p class="eyebrow">{t('common.personalArchive')}</p>
       <h1 id="home-title">{t('home.title')}</h1>
       <p>{t('home.description')}</p>

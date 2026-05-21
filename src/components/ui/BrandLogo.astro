@@ -1,0 +1,22 @@
+---
+interface Props {
+  variant: 'nav' | 'hero';
+  withText?: boolean;
+  glow?: boolean;
+}
+
+const { variant, withText = false, glow = variant === 'hero' } = Astro.props;
+---
+
+<span
+  class:list={[
+    'brand-logo',
+    `brand-logo-${variant}`,
+    { 'brand-logo-with-text': withText, 'brand-logo-glow': glow },
+  ]}
+>
+  <span class="brand-logo-frame" aria-hidden="true">
+    <img src="/images/brand/logo-p.png" alt="" loading="eager" decoding="async" />
+  </span>
+  {withText && <span class="brand-logo-text">Nikita Paladi</span>}
+</span>
