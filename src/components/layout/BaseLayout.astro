@@ -56,6 +56,12 @@ const alternateUrl = new URL(alternatePath, siteConfig.siteUrl).toString();
     <meta name="theme-color" content="#050607" />
     <meta name="theme-color" content="#b7f000" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#050607" media="(prefers-color-scheme: dark)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" hreflang={lang} href={canonicalUrl} />
     <link rel="alternate" hreflang={alternateLang} href={alternateUrl} />

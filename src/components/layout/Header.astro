@@ -17,12 +17,12 @@ const navItems = [
   { href: '/library', label: t('nav.library') },
   { href: '/places', label: t('nav.places') },
   { href: '/projects', label: t('nav.projects') },
-  { href: '/cv', label: t('nav.cv') },
 ];
 
 const currentPath = stripLocaleFromPath(Astro.url.pathname);
 const currentUrl = getLocalizedUrl(currentPath, lang);
 const alternateUrl = getAlternateLocaleUrl(Astro.url.pathname, lang);
+const cvIsActive = currentPath === '/cv';
 ---
 
 <header class="site-header">
@@ -45,5 +45,10 @@ const alternateUrl = getAlternateLocaleUrl(Astro.url.pathname, lang);
     }
   </nav>
 
-  <LanguageSwitcher lang={lang} currentUrl={currentUrl} alternateUrl={alternateUrl} />
+  <div class="header-actions">
+    <a class="header-cv-link" href={getLocalizedUrl('/cv', lang)} aria-current={cvIsActive ? 'page' : undefined}>
+      {t('nav.cv')}
+    </a>
+    <LanguageSwitcher lang={lang} currentUrl={currentUrl} alternateUrl={alternateUrl} />
+  </div>
 </header>
