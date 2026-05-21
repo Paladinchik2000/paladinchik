@@ -1,0 +1,16 @@
+{
+  "name": "Nikita Paladi — Personal Archive",
+  "short_name": "Paladinchik",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050607",
+  "theme_color": "#b7f000",
+  "icons": [
+    {
+      "src": "/images/brand/logo-p.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

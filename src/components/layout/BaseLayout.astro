@@ -1,6 +1,8 @@
 ---
 import Header from './Header.astro';
 import Footer from './Footer.astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Locale } from '../../i18n/ui';
 import { siteConfig } from '../../data/site';
 import { getAlternateLocaleUrl } from '../../i18n/utils';
@@ -20,14 +22,22 @@ const {
   description,
   lang = 'en',
   canonicalPath = Astro.url.pathname,
-  image = '/images/brand/social-preview.png',
+  image,
   type = 'website',
 } = Astro.props;
 const siteName = siteConfig.siteName;
 const pageTitle = title === siteName ? siteConfig.siteTitle : `${title} | ${siteName}`;
 const normalizedPath = canonicalPath === '/' ? '/' : canonicalPath.replace(/\/$/, '');
 const canonicalUrl = new URL(normalizedPath, siteConfig.siteUrl).toString();
-const imageUrl = image.startsWith('http') ? image : new URL(image, siteConfig.siteUrl).toString();
+const imageCandidate = typeof image === 'string' && image.length > 0 ? image : siteConfig.defaultSocialImage;
+const publicAssetExists = (assetPath: string) => {
+  if (!assetPath.startsWith('/')) return false;
+  return existsSync(join(process.cwd(), 'public', assetPath.slice(1)));
+};
+const resolvedImage = imageCandidate.startsWith('http') || publicAssetExists(imageCandidate)
+  ? imageCandidate
+  : siteConfig.defaultSocialImage;
+const imageUrl = resolvedImage.startsWith('http') ? resolvedImage : new URL(resolvedImage, siteConfig.siteUrl).toString();
 const ogLocale = lang === 'ru' ? 'ru_RU' : 'en_US';
 const alternateLang = lang === 'ru' ? 'en' : 'ru';
 const alternatePath = getAlternateLocaleUrl(normalizedPath, lang);
@@ -44,6 +54,8 @@ const alternateUrl = new URL(alternatePath, siteConfig.siteUrl).toString();
     <meta name="robots" content="index, follow" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#050607" />
+    <meta name="theme-color" content="#b7f000" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#050607" media="(prefers-color-scheme: dark)" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" hreflang={lang} href={canonicalUrl} />
     <link rel="alternate" hreflang={alternateLang} href={alternateUrl} />
@@ -59,7 +71,11 @@ const alternateUrl = new URL(alternatePath, siteConfig.siteUrl).toString();
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" href="/images/brand/logo-p.png" />
+    <link rel="shortcut icon" href="/images/brand/logo-p.png" />
+    <link rel="apple-touch-icon" href="/images/brand/logo-p.png" />
     <title>{pageTitle}</title>
   </head>
   <body>
