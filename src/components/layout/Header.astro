@@ -1,5 +1,6 @@
 ---
 import LanguageSwitcher from '../ui/LanguageSwitcher.astro';
+import BrandLogo from '../ui/BrandLogo.astro';
 import type { Locale } from '../../i18n/ui';
 import { getAlternateLocaleUrl, getLocalizedUrl, stripLocaleFromPath, useTranslations } from '../../i18n/utils';
 
@@ -26,8 +27,7 @@ const alternateUrl = getAlternateLocaleUrl(Astro.url.pathname, lang);
 
 <header class="site-header">
   <a class="brand-mark" href={getLocalizedUrl('/', lang)} aria-label="Nikita Paladi home">
-    <img src="/images/brand/logo-p.png" alt="" width="40" height="40" />
-    <span>Nikita Paladi</span>
+    <BrandLogo variant="nav" withText />
   </a>
 
   <nav class="site-nav" aria-label="Primary navigation">
