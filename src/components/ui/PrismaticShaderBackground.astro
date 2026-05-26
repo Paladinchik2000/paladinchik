@@ -1,0 +1,386 @@
+<div class="prismatic-shader-background" aria-hidden="true">
+  <canvas class="prismatic-shader-canvas"></canvas>
+  <div class="prismatic-shader-fallback"></div>
+  <div class="prismatic-shader-grain"></div>
+  <div class="prismatic-shader-vignette"></div>
+</div>
+
+<script>
+  import * as THREE from 'three';
+
+  const vertexShader = `
+    varying vec2 vUv;
+
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position.xy, 0.0, 1.0);
+    }
+  `;
+
+  const fragmentShader = `
+    precision highp float;
+
+    uniform float uTime;
+    uniform vec2 uResolution;
+    varying vec2 vUv;
+
+    #define PI 3.14159265359
+
+    mat2 rotate2d(float angle) {
+      float s = sin(angle);
+      float c = cos(angle);
+      return mat2(c, -s, s, c);
+    }
+
+    float hash(vec2 p) {
+      p = fract(p * vec2(123.34, 456.21));
+      p += dot(p, p + 45.32);
+      return fract(p.x * p.y);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+
+      return mix(
+        mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),
+        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+        u.y
+      );
+    }
+
+    float ribbon(vec2 p, float angle, float offset, float width, float phase, float amp, float freq) {
+      vec2 q = rotate2d(angle) * p;
+      float t = uTime * 0.055;
+      float curve =
+        sin(q.x * freq + phase + t) * amp +
+        sin(q.x * (freq * 0.53) - phase * 0.7 - t * 1.34) * amp * 0.66 +
+        sin(q.x * (freq * 1.87) + phase * 1.6 + t * 0.58) * amp * 0.22;
+      float d = abs(q.y - curve - offset);
+      float core = 1.0 - smoothstep(0.0, width, d);
+      float inner = (1.0 - smoothstep(0.0, width * 2.8, d)) * 0.34;
+      float halo = (1.0 - smoothstep(0.0, width * 11.0, d)) * 0.12;
+      return core + inner + halo;
+    }
+
+    float rayField(vec2 p, vec2 origin, float spread, float phase) {
+      vec2 q = p - origin;
+      float angle = atan(q.y, q.x);
+      float dist = length(q);
+      float rays = pow(abs(sin(angle * spread + phase + uTime * 0.035)), 18.0);
+      return rays * (1.0 - smoothstep(0.04, 1.35, dist)) * 0.15;
+    }
+
+    vec3 prismPalette(float x) {
+      vec3 cyan = vec3(0.36, 0.88, 1.0);
+      vec3 blue = vec3(0.25, 0.38, 1.0);
+      vec3 violet = vec3(0.67, 0.55, 1.0);
+      vec3 pink = vec3(1.0, 0.62, 0.78);
+      vec3 pearl = vec3(0.96, 0.99, 1.0);
+      vec3 champagne = vec3(1.0, 0.82, 0.58);
+
+      vec3 a = mix(cyan, blue, smoothstep(0.0, 0.28, x));
+      vec3 b = mix(violet, pink, smoothstep(0.28, 0.68, x));
+      vec3 c = mix(pearl, champagne, smoothstep(0.74, 1.0, x)) * 0.92;
+      return mix(mix(a, b, smoothstep(0.2, 0.72, x)), c, smoothstep(0.64, 1.0, x));
+    }
+
+    void main() {
+      vec2 fragCoord = vUv * uResolution;
+      vec2 uv = (fragCoord - 0.5 * uResolution) / min(uResolution.x, uResolution.y);
+      vec2 screenUv = vUv;
+      float time = uTime * 0.035;
+
+      vec3 baseTop = vec3(0.005, 0.009, 0.023);
+      vec3 baseBottom = vec3(0.001, 0.003, 0.011);
+      vec3 color = mix(baseBottom, baseTop, smoothstep(0.0, 1.0, screenUv.y));
+
+      float centerBloom = exp(-dot(uv - vec2(0.05, 0.08), uv - vec2(0.05, 0.08)) * 2.35);
+      float blueBloom = exp(-dot(uv - vec2(-0.38, 0.12), uv - vec2(-0.38, 0.12)) * 3.2);
+      float violetBloom = exp(-dot(uv - vec2(0.48, -0.24), uv - vec2(0.48, -0.24)) * 2.6);
+      float centerQuiet = exp(-dot(uv - vec2(0.0, -0.02), uv - vec2(0.0, -0.02)) * 5.6);
+      float quietFactor = mix(1.0, 0.48, centerQuiet);
+
+      color += vec3(0.12, 0.24, 0.42) * blueBloom * 0.24;
+      color += vec3(0.34, 0.18, 0.56) * violetBloom * 0.2;
+      color += vec3(0.62, 0.82, 1.0) * centerBloom * 0.072;
+
+      float r1 = ribbon(uv + vec2(sin(time) * 0.035, cos(time * 0.7) * 0.02), -0.48, 0.05, 0.018, 0.2, 0.12, 4.8);
+      float r2 = ribbon(uv + vec2(-0.08, 0.1), 0.62, -0.16, 0.014, 1.9, 0.1, 5.8);
+      float r3 = ribbon(uv + vec2(0.12, -0.06), -1.02, 0.02, 0.012, 3.3, 0.13, 4.2);
+      float r4 = ribbon(uv + vec2(-0.16, -0.2), 0.18, 0.2, 0.016, 4.6, 0.085, 6.2);
+      float r5 = ribbon(uv + vec2(0.3, 0.16), 1.1, -0.08, 0.011, 5.7, 0.11, 5.1);
+      float r6 = ribbon(uv + vec2(-0.24, 0.32), -0.78, -0.24, 0.01, 7.2, 0.1, 6.8);
+
+      float ribbonMask = (r1 * 0.72 + r2 * 0.58 + r3 * 0.52 + r4 * 0.46 + r5 * 0.42 + r6 * 0.34) * quietFactor;
+      float chromaA = ribbon(uv + vec2(0.008, -0.004), -0.48, 0.05, 0.012, 0.5, 0.12, 4.8) * quietFactor;
+      float chromaB = ribbon(uv + vec2(-0.007, 0.006), 0.62, -0.16, 0.01, 2.1, 0.1, 5.8) * quietFactor;
+
+      float paletteShift = fract(screenUv.x * 0.42 + screenUv.y * 0.58 + sin(uTime * 0.04) * 0.08);
+      vec3 ribbonColor = prismPalette(paletteShift);
+      vec3 splitColor = vec3(chromaA * 0.18, chromaB * 0.26, (chromaA + chromaB) * 0.32);
+      color += ribbonColor * ribbonMask * 0.58;
+      color += splitColor;
+
+      float rayA = rayField(uv, vec2(0.02, -0.04), 11.0, 0.4) * mix(1.0, 0.58, centerQuiet);
+      float rayB = rayField(rotate2d(0.32) * uv, vec2(-0.1, 0.06), 8.0, 1.9) * mix(1.0, 0.58, centerQuiet);
+      color += vec3(0.55, 0.82, 1.0) * rayA;
+      color += vec3(0.75, 0.58, 1.0) * rayB * 0.72;
+
+      float softTexture = noise(screenUv * vec2(36.0, 24.0) + uTime * 0.01);
+      float fineGrain = hash(fragCoord + uTime * 8.0) - 0.5;
+      color += (softTexture - 0.5) * 0.018;
+      color += fineGrain * 0.038;
+
+      float vignette = 1.0 - smoothstep(0.28, 1.12, length(uv * vec2(0.84, 1.12)));
+      color *= mix(0.38, 1.0, vignette);
+      color = pow(max(color, 0.0), vec3(0.94));
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  const initPrismaticShaderBackground = () => {
+    const root = document.querySelector('.prismatic-shader-background');
+    const canvas = root?.querySelector('.prismatic-shader-canvas');
+
+    if (!(root instanceof HTMLElement) || !(canvas instanceof HTMLCanvasElement)) {
+      return;
+    }
+
+    window.__prismaticShaderCleanup?.();
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 700px)').matches;
+    const maxDpr = isMobile ? 1.25 : 1.5;
+    const renderScale = isMobile ? 0.82 : 1;
+
+    let renderer;
+
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: false,
+        alpha: false,
+        powerPreference: 'high-performance',
+      });
+    } catch {
+      root.dataset.webgl = 'unsupported';
+      return;
+    }
+
+    if (!renderer.capabilities.isWebGL2 && !renderer.capabilities.isWebGL1) {
+      root.dataset.webgl = 'unsupported';
+      renderer.dispose();
+      return;
+    }
+
+    root.dataset.webgl = 'ready';
+    renderer.setClearColor(0x020409, 1);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const drawingBufferSize = new THREE.Vector2();
+    const uniforms = {
+      uTime: { value: 0 },
+      uResolution: { value: new THREE.Vector2(1, 1) },
+    };
+    const material = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader,
+      fragmentShader,
+      depthWrite: false,
+      depthTest: false,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    const clock = new THREE.Clock();
+    let frameId = 0;
+    let running = false;
+
+    const resize = () => {
+      const width = Math.max(1, Math.floor(window.innerWidth * renderScale));
+      const height = Math.max(1, Math.floor(window.innerHeight * renderScale));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
+      renderer.setSize(width, height, false);
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      renderer.getDrawingBufferSize(drawingBufferSize);
+      uniforms.uResolution.value.copy(drawingBufferSize);
+    };
+
+    const render = () => {
+      uniforms.uTime.value = prefersReducedMotion ? 14 : clock.getElapsedTime();
+      renderer.render(scene, camera);
+    };
+
+    const animate = () => {
+      if (!running) return;
+      render();
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    const start = () => {
+      if (running || prefersReducedMotion || document.visibilityState === 'hidden') return;
+      running = true;
+      clock.start();
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    const stop = () => {
+      running = false;
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+        frameId = 0;
+      }
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        stop();
+      } else {
+        render();
+        start();
+      }
+    };
+
+    const cleanup = () => {
+      stop();
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+      delete window.__prismaticShaderCleanup;
+    };
+
+    window.addEventListener('resize', resize, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.__prismaticShaderCleanup = cleanup;
+
+    resize();
+    render();
+    start();
+  };
+
+  initPrismaticShaderBackground();
+  document.addEventListener('astro:page-load', initPrismaticShaderBackground);
+</script>
+
+<style>
+  .prismatic-shader-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background: #020409;
+    contain: paint;
+  }
+
+  .prismatic-shader-background > * {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .prismatic-shader-canvas {
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 700ms ease;
+  }
+
+  .prismatic-shader-background[data-webgl="ready"] .prismatic-shader-canvas {
+    opacity: 1;
+  }
+
+  .prismatic-shader-fallback {
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 52% 36%, rgba(219, 244, 255, 0.16), transparent 19rem),
+      radial-gradient(ellipse at 24% 34%, rgba(82, 199, 255, 0.22), transparent 24rem),
+      radial-gradient(ellipse at 78% 60%, rgba(175, 145, 255, 0.18), transparent 26rem),
+      radial-gradient(ellipse at 44% 78%, rgba(255, 180, 207, 0.1), transparent 22rem),
+      linear-gradient(145deg, #01020a 0%, #050917 48%, #01020a 100%);
+  }
+
+  .prismatic-shader-fallback::before,
+  .prismatic-shader-fallback::after {
+    position: absolute;
+    inset: -18%;
+    content: "";
+    opacity: 0.36;
+    filter: blur(28px) saturate(1.18);
+    mix-blend-mode: screen;
+    transform: rotate(-18deg);
+  }
+
+  .prismatic-shader-fallback::before {
+    background:
+      linear-gradient(100deg, transparent 17%, rgba(125, 231, 255, 0.04) 32%, rgba(251, 253, 255, 0.34) 43%, rgba(183, 166, 255, 0.13) 53%, transparent 66%),
+      linear-gradient(78deg, transparent 38%, rgba(255, 180, 207, 0.16) 49%, rgba(125, 231, 255, 0.12) 56%, transparent 68%);
+  }
+
+  .prismatic-shader-fallback::after {
+    background:
+      linear-gradient(62deg, transparent 20%, rgba(91, 114, 255, 0.16) 36%, rgba(251, 253, 255, 0.26) 43%, rgba(125, 231, 255, 0.12) 50%, transparent 63%),
+      linear-gradient(126deg, transparent 42%, rgba(255, 180, 207, 0.16) 52%, transparent 64%);
+    transform: rotate(18deg);
+  }
+
+  .prismatic-shader-grain {
+    z-index: 2;
+    opacity: 0.16;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.16) 0 0.06rem, transparent 0.07rem),
+      radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.13) 0 0.05rem, transparent 0.06rem),
+      radial-gradient(circle at 44% 64%, rgba(255, 255, 255, 0.1) 0 0.04rem, transparent 0.05rem);
+    background-position:
+      0 0,
+      1.2rem 1.6rem,
+      2.4rem 0.8rem;
+    background-size:
+      2.6rem 2.6rem,
+      3.1rem 3.1rem,
+      2.2rem 2.2rem;
+    mix-blend-mode: overlay;
+  }
+
+  .prismatic-shader-vignette {
+    z-index: 3;
+    background:
+      radial-gradient(ellipse at 50% 42%, transparent 0%, rgba(1, 3, 10, 0.04) 36%, rgba(1, 3, 10, 0.52) 100%),
+      linear-gradient(180deg, rgba(1, 3, 10, 0.5), transparent 20%, transparent 62%, rgba(1, 3, 10, 0.56)),
+      linear-gradient(90deg, rgba(1, 3, 10, 0.42), transparent 22%, transparent 78%, rgba(1, 3, 10, 0.44));
+  }
+
+  @media (max-width: 700px) {
+    .prismatic-shader-canvas {
+      opacity: 0.82;
+    }
+
+    .prismatic-shader-grain {
+      opacity: 0.12;
+    }
+
+    .prismatic-shader-vignette {
+      background:
+        radial-gradient(ellipse at 50% 38%, transparent 0%, rgba(1, 3, 10, 0.18) 34%, rgba(1, 3, 10, 0.68) 100%),
+        linear-gradient(180deg, rgba(1, 3, 10, 0.58), transparent 22%, transparent 58%, rgba(1, 3, 10, 0.66)),
+        linear-gradient(90deg, rgba(1, 3, 10, 0.52), transparent 22%, transparent 78%, rgba(1, 3, 10, 0.52));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prismatic-shader-canvas {
+      transition: none;
+    }
+  }
+</style>

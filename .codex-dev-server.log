@@ -42,3 +42,170 @@
 [2m13:37:36[22m [34m[watch][39m /src/styles/global.css
 [2m13:38:11[22m [34m[watch][39m /src/styles/global.css
 [2m13:38:34[22m [34m[watch][39m /src/styles/global.css
+[2m14:10:54[22m [34m[watch][39m /src/styles/global.css
+[2m14:11:18[22m [34m[watch][39m /src/styles/global.css
+[2m10:44:00[22m [34m[200][39m / [2m249ms[22m
+[2m10:49:34[22m [34m[watch][39m /src/styles/global.css
+[2m10:49:35[22m [34m[200][39m / [2m208ms[22m
+[2m10:50:09[22m [34m[watch][39m /src/styles/global.css
+[2m10:50:50[22m [34m[watch][39m /src/styles/global.css
+[2m10:51:33[22m [34m[watch][39m /src/styles/global.css
+[2m10:52:00[22m [34m[watch][39m /src/styles/global.css
+[2m10:52:36[22m [34m[watch][39m /src/components/ui/AuroraBackground.astro?astro&type=style&index=0&lang.css
+[2m10:52:37[22m [34m[200][39m / [2m39ms[22m
+[2m10:59:08[22m [34m[watch][39m /src/styles/global.css
+[2m11:00:14[22m [34m[watch][39m /src/components/ui/AuroraBackground.astro?astro&type=style&index=0&lang.css
+[2m11:00:15[22m [34m[200][39m / [2m19ms[22m
+[2m12:12:03[22m [34m[200][39m / [2m4ms[22m
+[2m12:12:33[22m [34m[200][39m /about [2m19ms[22m
+[2m12:12:34[22m [34m[200][39m /cinema [2m80ms[22m
+[2m12:12:35[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m1ms[22m
+[2m12:12:35[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m1ms[22m
+[2m12:12:35[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m1ms[22m
+[2m12:12:35[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m2ms[22m
+[2m12:12:36[22m [34m[200][39m /library [2m12ms[22m
+[2m12:12:37[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m1ms[22m
+[2m12:12:37[22m [33m[404][39m /images/books/meditations/cover.jpg [2m1ms[22m
+[2m12:12:37[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m0ms[22m
+[2m12:12:37[22m [33m[404][39m /images/books/meditations/cover.jpg [2m0ms[22m
+[2m12:12:38[22m [34m[200][39m /places [2m62ms[22m
+[2m12:12:39[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m12:12:39[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m12:12:39[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m0ms[22m
+[2m12:12:39[22m [33m[404][39m /images/places/rome/cover.jpg [2m0ms[22m
+[2m12:12:40[22m [34m[200][39m /ru/places [2m17ms[22m
+[2m12:12:41[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m12:12:41[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m12:12:41[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m12:12:41[22m [33m[404][39m /images/places/rome/cover.jpg [2m0ms[22m
+[2m12:12:42[22m [34m[200][39m /ru [2m10ms[22m
+[2m12:12:47[22m [34m[200][39m / [2m3ms[22m
+[2m12:12:50[22m [34m[200][39m /ru [2m3ms[22m
+[2m12:12:51[22m [34m[200][39m / [2m3ms[22m
+[2m12:21:04[22m [34m[watch][39m /src/components/ui/AuroraBackground.astro?astro&type=style&index=0&lang.css
+[2m12:22:17[22m [34m[watch][39m /src/components/ui/AuroraBackground.astro?astro&type=style&index=0&lang.css
+[2m13:48:44[22m [34m[200][39m / [2m29ms[22m
+[2m13:49:39[22m Configuration file updated. Restarting...
+[vite] connected.
+[2m13:49:43[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+[2m13:49:43[22m [34m[vite][39m server restarted.
+[vite] connected.
+[2m13:49:44[22m [34m[200][39m / [2m67ms[22m
+[2m13:51:51[22m [34m[200][39m / [2m28ms[22m
+[2m13:51:53[22m [34m[vite][39m [32m✨ new dependencies optimized: [33mthree[32m[39m
+[2m13:51:53[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[2m13:51:53[22m [34m[200][39m / [2m5ms[22m
+[2m13:52:14[22m [34m[watch][39m /src/styles/global.css
+[2m13:54:42[22m [34m[200][39m / [2m8ms[22m
+[2m13:59:26[22m [34m[watch][39m src/components/ui/PrismaticShaderBackground.astro
+[2m13:59:27[22m [34m[200][39m / [2m12ms[22m
+[2m13:59:55[22m [34m[200][39m / [2m3ms[22m
+[2m13:59:55[22m [34m[200][39m /cinema [2m113ms[22m
+[2m13:59:55[22m [34m[200][39m /library [2m18ms[22m
+[2m13:59:55[22m [34m[200][39m /places [2m22ms[22m
+[2m13:59:56[22m [34m[200][39m /projects [2m19ms[22m
+[2m13:59:56[22m [34m[200][39m /cv [2m15ms[22m
+[2m13:59:56[22m [34m[200][39m /ru [2m15ms[22m
+[2m14:00:22[22m [34m[watch][39m /src/components/ui/AuroraBackground.astro?astro&type=style&index=0&lang.css
+[2m14:00:22[22m [34m[200][39m / [2m6ms[22m
+[2m14:00:50[22m [34m[200][39m / [2m3ms[22m
+[2m14:00:50[22m [34m[200][39m /cinema [2m4ms[22m
+[2m14:00:50[22m [34m[200][39m /library [2m4ms[22m
+[2m14:00:50[22m [34m[200][39m /places [2m3ms[22m
+[2m14:00:50[22m [34m[200][39m /projects [2m4ms[22m
+[2m14:00:50[22m [34m[200][39m /cv [2m3ms[22m
+[2m14:00:50[22m [34m[200][39m /ru [2m2ms[22m
+[2m14:01:23[22m [34m[watch][39m src/components/ui/PrismaticShaderBackground.astro
+[2m14:01:24[22m [34m[200][39m / [2m10ms[22m
+[2m14:01:47[22m [34m[200][39m / [2m3ms[22m
+[2m14:01:48[22m [34m[200][39m /cinema [2m13ms[22m
+[2m14:01:48[22m [34m[200][39m /library [2m9ms[22m
+[2m14:01:48[22m [34m[200][39m /places [2m12ms[22m
+[2m14:01:48[22m [34m[200][39m /projects [2m10ms[22m
+[2m14:01:48[22m [34m[200][39m /cv [2m13ms[22m
+[2m14:01:48[22m [34m[200][39m /ru [2m25ms[22m
+[2m14:14:38[22m [34m[200][39m /about [2m16ms[22m
+[2m14:14:41[22m [34m[200][39m / [2m4ms[22m
+[2m14:14:42[22m [34m[200][39m /about [2m3ms[22m
+[2m14:14:44[22m [34m[200][39m /cinema [2m5ms[22m
+[2m14:14:45[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m4ms[22m
+[2m14:14:45[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m1ms[22m
+[2m14:14:45[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m0ms[22m
+[2m14:14:45[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m0ms[22m
+[2m14:14:47[22m [34m[200][39m /library [2m4ms[22m
+[2m14:14:48[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m0ms[22m
+[2m14:14:48[22m [33m[404][39m /images/books/meditations/cover.jpg [2m0ms[22m
+[2m14:14:48[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m0ms[22m
+[2m14:14:48[22m [33m[404][39m /images/books/meditations/cover.jpg [2m0ms[22m
+[2m14:14:49[22m [34m[200][39m /places [2m4ms[22m
+[2m14:14:50[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m14:14:50[22m [33m[404][39m /images/places/rome/cover.jpg [2m7ms[22m
+[2m14:14:50[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m14:14:50[22m [33m[404][39m /images/places/rome/cover.jpg [2m2ms[22m
+[2m14:14:50[22m [34m[200][39m /projects [2m5ms[22m
+[2m14:14:51[22m [34m[vite][39m [32m✨ new dependencies optimized: [33mleaflet[32m[39m
+[2m14:14:51[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[2m16:42:06[22m [34m[200][39m /projects [2m7ms[22m
+[2m18:02:20[22m [34m[200][39m /cinema [2m11ms[22m
+[2m18:02:21[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m0ms[22m
+[2m18:02:21[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m1ms[22m
+[2m18:02:22[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m1ms[22m
+[2m18:02:22[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m1ms[22m
+[2m18:02:22[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m0ms[22m
+[2m18:02:22[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m1ms[22m
+[2m18:02:23[22m [34m[200][39m /about [2m6ms[22m
+[2m18:02:27[22m [34m[200][39m /places [2m4ms[22m
+[2m18:02:27[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m0ms[22m
+[2m18:02:27[22m [33m[404][39m /images/places/rome/cover.jpg [2m0ms[22m
+[2m18:02:27[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m0ms[22m
+[2m18:02:27[22m [33m[404][39m /images/places/rome/cover.jpg [2m0ms[22m
+[2m13:18:46[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m7ms[22m
+[2m13:18:46[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m13:18:50[22m [34m[200][39m / [2m53ms[22m
+[2m13:35:47[22m [34m[200][39m / [2m103ms[22m
+[2m13:37:10[22m [34m[watch][39m /src/styles/global.css
+[2m13:37:29[22m [34m[watch][39m /src/styles/global.css
+[2m13:38:02[22m [34m[watch][39m /src/styles/global.css
+[2m13:38:43[22m [34m[watch][39m src/components/ui/PrismaticShaderBackground.astro
+[2m13:38:44[22m [34m[200][39m / [2m312ms[22m
+[2m13:39:33[22m [34m[200][39m / [2m3ms[22m
+[2m13:39:33[22m [34m[200][39m /ru [2m18ms[22m
+[2m13:41:53[22m [34m[200][39m / [2m3ms[22m
+[2m13:42:05[22m [34m[200][39m /about [2m19ms[22m
+[2m13:42:08[22m [34m[200][39m /cinema [2m19ms[22m
+[2m13:42:08[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m0ms[22m
+[2m13:42:08[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m0ms[22m
+[2m13:42:08[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m0ms[22m
+[2m13:42:08[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m0ms[22m
+[2m13:42:10[22m [34m[200][39m /library [2m13ms[22m
+[2m13:42:10[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m1ms[22m
+[2m13:42:10[22m [33m[404][39m /images/books/meditations/cover.jpg [2m1ms[22m
+[2m13:42:10[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m1ms[22m
+[2m13:42:10[22m [33m[404][39m /images/books/meditations/cover.jpg [2m1ms[22m
+[2m13:42:11[22m [34m[200][39m /places [2m15ms[22m
+[2m13:42:12[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:42:12[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m13:42:12[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:42:12[22m [33m[404][39m /images/places/rome/cover.jpg [2m0ms[22m
+[2m13:42:13[22m [34m[200][39m /projects [2m12ms[22m
+[2m13:42:15[22m [34m[200][39m / [2m3ms[22m
+[2m13:42:42[22m [34m[200][39m /about [2m4ms[22m
+[2m13:42:56[22m [34m[200][39m /cinema [2m4ms[22m
+[2m13:42:56[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m0ms[22m
+[2m13:42:56[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m0ms[22m
+[2m13:42:56[22m [33m[404][39m /images/movies/blade-runner-2049/cover.jpg [2m1ms[22m
+[2m13:42:56[22m [33m[404][39m /images/movies/interstellar/cover.jpg [2m1ms[22m
+[2m13:43:40[22m [34m[200][39m /library [2m5ms[22m
+[2m13:43:41[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m0ms[22m
+[2m13:43:41[22m [33m[404][39m /images/books/meditations/cover.jpg [2m0ms[22m
+[2m13:43:41[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m1ms[22m
+[2m13:43:41[22m [33m[404][39m /images/books/meditations/cover.jpg [2m1ms[22m
+[2m13:43:41[22m [33m[404][39m /images/books/atomic-habits/cover.jpg [2m0ms[22m
+[2m13:43:41[22m [33m[404][39m /images/books/meditations/cover.jpg [2m0ms[22m
+[2m13:44:02[22m [34m[200][39m /places [2m4ms[22m
+[2m13:44:03[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:44:03[22m [33m[404][39m /images/places/rome/cover.jpg [2m1ms[22m
+[2m13:44:03[22m [33m[404][39m /images/places/bucharest/cover.jpg [2m1ms[22m
+[2m13:44:03[22m [33m[404][39m /images/places/rome/cover.jpg [2m0ms[22m
+[2m13:44:18[22m [34m[200][39m /projects [2m5ms[22m
+[2m13:44:31[22m [34m[200][39m /cv [2m16ms[22m
