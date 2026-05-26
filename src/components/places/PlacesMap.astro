@@ -18,7 +18,7 @@ interface Props {
 
 const { places, lang } = Astro.props;
 const mapId = `places-map-${Math.random().toString(36).slice(2)}`;
-const emptyText = lang === 'ru' ? 'Нет мест с координатами.' : 'No mapped places yet.';
+const emptyText = lang === 'ru' ? 'Нет мест с координатами.' : 'No mapped places available.';
 const openLabel = lang === 'ru' ? 'Открыть место' : 'Open place';
 ---
 
@@ -47,7 +47,7 @@ const openLabel = lang === 'ru' ? 'Открыть место' : 'Open place';
   const initializePlacesMap = async (container) => {
     const rawPlaces = container.dataset.places;
     const places = rawPlaces ? JSON.parse(rawPlaces) : [];
-    const emptyText = container.dataset.emptyText || 'No mapped places yet.';
+    const emptyText = container.dataset.emptyText || 'No mapped places available.';
     const openLabel = container.dataset.openLabel || 'Open place';
 
     if (!Array.isArray(places) || places.length === 0) {

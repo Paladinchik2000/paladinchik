@@ -25,7 +25,7 @@ const sortOptions = [
   <section class="page-hero">
     <p class="eyebrow">Чтение</p>
     <h1>Библиотека</h1>
-    <p>Книги, заметки, идеи и короткие размышления.</p>
+    <p>Книги, заметки, идеи и короткие размышления, которые хочется сохранить.</p>
   </section>
 
   <ArchiveFilters
@@ -40,7 +40,7 @@ const sortOptions = [
     sortOptions={sortOptions}
   />
 
-  <section id="library-archive" class="page-section placeholder-grid" aria-label="Записи библиотеки">
+  <section id="library-archive" class="page-section archive-grid" aria-label="Записи библиотеки">
     {
       books.map((book) => (
         <ArchiveCard

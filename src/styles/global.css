@@ -515,7 +515,7 @@ p {
 }
 
 .section-grid,
-.placeholder-grid {
+.archive-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
@@ -1170,7 +1170,7 @@ a.archive-card:hover {
   }
 
   .section-grid,
-  .placeholder-grid,
+  .archive-grid,
   .gallery-grid,
   .project-grid,
   .project-detail-grid,
@@ -1211,7 +1211,7 @@ a.archive-card:hover {
   }
 
   .section-grid,
-  .placeholder-grid,
+  .archive-grid,
   .gallery-grid,
   .project-grid,
   .project-detail-grid,

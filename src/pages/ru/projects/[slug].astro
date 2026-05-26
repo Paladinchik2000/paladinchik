@@ -27,7 +27,7 @@ const slug = getContentSlug(project);
 
 <BaseLayout
   title={project.data.title}
-  description={project.data.description ?? `${project.data.title} заметка о проекте.`}
+  description={project.data.description ?? `${project.data.title}: заметка о проекте.`}
   lang={lang}
   canonicalPath={`/ru/projects/${slug}`}
   image={project.data.cover}
@@ -70,7 +70,7 @@ const slug = getContentSlug(project);
             {highlights.map((highlight) => <li>{highlight}</li>)}
           </ul>
         ) : (
-          <p>Ключевые моменты можно добавить позже.</p>
+          <p>Для этой записи ключевые моменты отдельно не выделены.</p>
         )
       }
     </article>

@@ -32,12 +32,12 @@ const mapPlaces = places
   <section class="page-hero">
     <p class="eyebrow">Путешествия</p>
     <h1>Места</h1>
-    <p>Здесь позже появится карта мест, которые я посетил.</p>
+    <p>Личная карта городов и мест, где я был: заметки, фотографии и впечатления, собранные по пути.</p>
   </section>
 
   <PlacesMap places={mapPlaces} lang={lang} />
 
-  <section class="page-section placeholder-grid" aria-label="Записи о местах">
+  <section class="page-section archive-grid" aria-label="Записи о местах">
     {
       places.map((place) => (
         <ArchiveCard

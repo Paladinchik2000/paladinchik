@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { siteConfig } from '../../data/site';
 import { getContentSlug } from '../../i18n/utils';
 
 const lang = 'ru';
@@ -23,16 +24,17 @@ const selectedProjects = (await getCollection('projects'))
       <a class="button button-primary" href="/files/cv.pdf">Скачать CV</a>
       <a class="button button-secondary" href="/ru/projects">Смотреть проекты</a>
     </div>
-    <p class="subtle-note">PDF-версию можно добавить позже.</p>
+    <p class="subtle-note">PDF-версия CV готовится.</p>
   </section>
 
   <section class="cv-grid" aria-label="CV">
     <article class="text-panel glass-card cv-panel-wide">
       <h2>Профиль</h2>
       <p>
-        Эта страница дает краткий публичный обзор архива: творческая работа,
-        продуктовые эксперименты, тексты и веб-разработка. Более точные карьерные
-        детали можно добавить позже.
+        Краткий обзор моего текущего направления: веб-разработка, AI-инструменты,
+        социальные медиа, творческие проекты и практическая работа с прототипами.
+        Я начинающий программист, поэтому CV честно показывает то, что я сейчас
+        строю, изучаю и собираю.
       </p>
     </article>
 
@@ -40,8 +42,8 @@ const selectedProjects = (await getCollection('projects'))
       <h2>Фокус</h2>
       <ul class="clean-list">
         <li>Личные архивы знаний и системы контента</li>
-        <li>Продуктовые эксперименты и структура интерфейсов</li>
-        <li>Фильмы, книги, места и короткие заметки</li>
+        <li>Веб-интерфейсы, AI-процессы и структура прототипов</li>
+        <li>Творческие проекты, идеи для социальных медиа и личная документация</li>
       </ul>
     </article>
 
@@ -72,18 +74,20 @@ const selectedProjects = (await getCollection('projects'))
       <ul class="timeline-list">
         <li>
           <span>2026</span>
-          Разработка двуязычного личного архива и структуры контента.
+          Разработка двуязычного личного архива и улучшение структуры контента.
         </li>
         <li>
           <span>2025</span>
-          Исследование продуктовых прототипов, рабочих процессов и интерфейсных идей.
+          Обучение через небольшие прототипы, интерфейсные идеи и практические веб-эксперименты.
         </li>
       </ul>
     </article>
 
     <article class="text-panel glass-card">
       <h2>Контакты</h2>
-      <p>Контактные данные можно добавить здесь, когда публичная версия будет готова.</p>
+      <p>
+        Для связи: <a href={siteConfig.social.email}>paladi.nikita2000@gmail.com</a>.
+      </p>
     </article>
   </section>
 </BaseLayout>
