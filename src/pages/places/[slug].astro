@@ -20,7 +20,7 @@ const { Content } = await render(place);
 const coverStyle = place.data.cover ? `--cover-image: url("${place.data.cover}")` : undefined;
 const gallery = place.data.gallery ?? [];
 const galleryTitle = 'Gallery';
-const galleryEmptyText = 'Gallery images will be added later.';
+const galleryEmptyText = 'This place is currently saved as a text note without a separate gallery.';
 const slug = getContentSlug(place);
 ---
 

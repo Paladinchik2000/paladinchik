@@ -30,7 +30,7 @@ const sortOptions = [
   <section class="page-hero">
     <p class="eyebrow">Reviews</p>
     <h1>Cinema</h1>
-    <p>Films I watched, remembered, questioned, or returned to.</p>
+    <p>Films that shaped my taste, mood, and way of seeing stories.</p>
   </section>
 
   <ArchiveFilters
@@ -45,7 +45,7 @@ const sortOptions = [
     sortOptions={sortOptions}
   />
 
-  <section id="cinema-archive" class="page-section placeholder-grid" aria-label="Cinema entries">
+  <section id="cinema-archive" class="page-section archive-grid" aria-label="Cinema entries">
     {
       movies.map((movie) => (
         <ArchiveCard

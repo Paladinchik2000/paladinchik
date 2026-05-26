@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../components/layout/BaseLayout.astro';
+import { siteConfig } from '../data/site';
 import { getContentSlug } from '../i18n/utils';
 
 const lang = 'en';
@@ -23,16 +24,17 @@ const selectedProjects = (await getCollection('projects'))
       <a class="button button-primary" href="/files/cv.pdf">Download CV</a>
       <a class="button button-secondary" href="/projects">View Projects</a>
     </div>
-    <p class="subtle-note">PDF version can be added later.</p>
+    <p class="subtle-note">CV PDF is being prepared.</p>
   </section>
 
   <section class="cv-grid" aria-label="CV sections">
     <article class="text-panel glass-card cv-panel-wide">
       <h2>Profile</h2>
       <p>
-        This page is a concise public overview for the archive: creative work,
-        project thinking, writing, and web development. More specific career
-        details can be added as the CV matures.
+        A concise overview of my current direction: web development, AI tools,
+        social media, creative projects, and practical prototype work. I am a
+        beginner programmer, so this CV focuses on what I am building, learning,
+        and documenting honestly.
       </p>
     </article>
 
@@ -40,8 +42,8 @@ const selectedProjects = (await getCollection('projects'))
       <h2>Focus Areas</h2>
       <ul class="clean-list">
         <li>Personal knowledge archives and content systems</li>
-        <li>Product experiments and interface structure</li>
-        <li>Films, books, places, and reflective notes</li>
+        <li>Web interfaces, AI-assisted workflows, and prototype structure</li>
+        <li>Creative projects, social media ideas, and personal documentation</li>
       </ul>
     </article>
 
@@ -72,18 +74,20 @@ const selectedProjects = (await getCollection('projects'))
       <ul class="timeline-list">
         <li>
           <span>2026</span>
-          Building the bilingual personal archive and content structure.
+          Building the bilingual personal archive and improving its content structure.
         </li>
         <li>
           <span>2025</span>
-          Exploring product prototypes, workflows, and interface ideas.
+          Learning through small prototypes, interface ideas, and practical web experiments.
         </li>
       </ul>
     </article>
 
     <article class="text-panel glass-card">
       <h2>Contact</h2>
-      <p>Contact details can be added here when the public version is ready.</p>
+      <p>
+        For contact, write to <a href={siteConfig.social.email}>paladi.nikita2000@gmail.com</a>.
+      </p>
     </article>
   </section>
 </BaseLayout>

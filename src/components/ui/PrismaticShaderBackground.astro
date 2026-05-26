@@ -6,8 +6,6 @@
 </div>
 
 <script>
-  import * as THREE from 'three';
-
   const vertexShader = `
     varying vec2 vUv;
 
@@ -141,7 +139,7 @@
     }
   `;
 
-  const initPrismaticShaderBackground = () => {
+  const initPrismaticShaderBackground = async () => {
     const root = document.querySelector('.prismatic-shader-background');
     const canvas = root?.querySelector('.prismatic-shader-canvas');
 
@@ -156,6 +154,12 @@
     const maxDpr = isMobile ? 1.25 : 1.5;
     const renderScale = isMobile ? 0.82 : 1;
 
+    if (isMobile || prefersReducedMotion) {
+      root.dataset.webgl = isMobile ? 'mobile-fallback' : 'reduced-motion';
+      return;
+    }
+
+    const THREE = await import('three');
     let renderer;
 
     try {
@@ -214,7 +218,7 @@
     };
 
     const render = () => {
-      uniforms.uTime.value = prefersReducedMotion ? 14 : clock.getElapsedTime();
+      uniforms.uTime.value = clock.getElapsedTime();
       renderer.render(scene, camera);
     };
 
@@ -225,7 +229,7 @@
     };
 
     const start = () => {
-      if (running || prefersReducedMotion || document.visibilityState === 'hidden') return;
+      if (running || document.visibilityState === 'hidden') return;
       running = true;
       clock.start();
       frameId = window.requestAnimationFrame(animate);
@@ -363,11 +367,17 @@
 
   @media (max-width: 700px) {
     .prismatic-shader-canvas {
-      opacity: 0.82;
+      display: none;
+    }
+
+    .prismatic-shader-fallback::before,
+    .prismatic-shader-fallback::after {
+      opacity: 0.2;
+      filter: blur(22px) saturate(1.05);
     }
 
     .prismatic-shader-grain {
-      opacity: 0.12;
+      opacity: 0.09;
     }
 
     .prismatic-shader-vignette {
@@ -380,7 +390,13 @@
 
   @media (prefers-reduced-motion: reduce) {
     .prismatic-shader-canvas {
+      display: none;
       transition: none;
+    }
+
+    .prismatic-shader-fallback::before,
+    .prismatic-shader-fallback::after {
+      opacity: 0.18;
     }
   }
 </style>

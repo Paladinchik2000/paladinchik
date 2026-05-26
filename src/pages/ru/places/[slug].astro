@@ -24,7 +24,7 @@ const slug = getContentSlug(place);
 
 <BaseLayout
   title={place.data.title}
-  description={place.data.description ?? `${place.data.title} заметка о месте.`}
+  description={place.data.description ?? `${place.data.title}: заметка о месте.`}
   lang={lang}
   canonicalPath={`/ru/places/${slug}`}
   image={place.data.cover}
@@ -74,7 +74,7 @@ const slug = getContentSlug(place);
         </div>
       ) : (
         <div class="text-panel glass-card gallery-empty">
-          <p>Фотографии появятся позже.</p>
+          <p>Для этого места сохранена текстовая заметка без отдельной галереи.</p>
         </div>
       )
     }
