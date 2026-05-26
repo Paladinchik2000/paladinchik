@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../components/layout/BaseLayout.astro';
 import { getContentSlug } from '../../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../../lib/structuredData';
 
 const lang = 'ru';
 const projects = (await getCollection('projects'))
@@ -11,18 +12,27 @@ const projects = (await getCollection('projects'))
 const featuredProjects = projects.filter((project) => project.data.featured);
 const getEntrySlug = (entry) => getContentSlug(entry);
 const getChips = (project) => [...(project.data.stack ?? []), ...(project.data.tags ?? [])].slice(0, 6);
+const pageDescription = 'Рабочее пространство для идей, экспериментов и проектов, которые я создаю.';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Главная', url: '/ru' },
+  { name: 'Проекты', url: '/ru/projects' },
+]);
 ---
 
 <BaseLayout
   title="Проекты"
-  description="Рабочее пространство для идей, экспериментов и проектов, которые я создаю."
+  description={pageDescription}
   lang={lang}
   canonicalPath="/ru/projects"
+  jsonLd={[
+    createCollectionPageSchema({ title: 'Проекты', description: pageDescription, url: '/ru/projects', lang }),
+    breadcrumbs,
+  ]}
 >
   <section class="page-hero">
     <p class="eyebrow">Работа</p>
     <h1>Проекты</h1>
-    <p>Рабочее пространство для идей, экспериментов и проектов, которые я создаю.</p>
+    <p>{pageDescription}</p>
   </section>
 
   {

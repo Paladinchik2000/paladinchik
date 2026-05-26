@@ -3,11 +3,16 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../components/layout/BaseLayout.astro';
 import { siteConfig } from '../data/site';
 import { getContentSlug } from '../i18n/utils';
+import { createBreadcrumbSchema } from '../lib/structuredData';
 
 const lang = 'en';
 const selectedProjects = (await getCollection('projects'))
   .filter((project) => project.data.lang === lang && project.data.featured)
   .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'CV', url: '/cv' },
+]);
 ---
 
 <BaseLayout
@@ -15,6 +20,7 @@ const selectedProjects = (await getCollection('projects'))
   description="Personal archive, creative projects, product experiments, and web development."
   lang={lang}
   canonicalPath="/cv"
+  jsonLd={breadcrumbs}
 >
   <section class="page-hero cv-hero">
     <p class="eyebrow">CV</p>

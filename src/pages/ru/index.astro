@@ -3,6 +3,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import Card from '../../components/ui/Card.astro';
 import BrandLogo from '../../components/ui/BrandLogo.astro';
 import { useTranslations } from '../../i18n/utils';
+import { createPersonSchema, createWebSiteSchema } from '../../lib/structuredData';
 
 const lang = 'ru';
 const t = useTranslations(lang);
@@ -47,7 +48,13 @@ const sections = [
 ];
 ---
 
-<BaseLayout title={t('home.title')} description={t('home.description')} lang={lang} canonicalPath="/ru">
+<BaseLayout
+  title={t('home.title')}
+  description={t('home.description')}
+  lang={lang}
+  canonicalPath="/ru"
+  jsonLd={[createWebSiteSchema(lang), createPersonSchema()]}
+>
   <section class="hero" aria-labelledby="home-title">
     <div class="hero-content">
       <BrandLogo variant="hero" />
