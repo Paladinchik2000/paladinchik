@@ -4,6 +4,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import ArchiveCard from '../../components/ui/ArchiveCard.astro';
 import PlacesMap from '../../components/places/PlacesMap.astro';
 import { getContentSlug, useTranslations } from '../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
 
 const lang = 'en';
 const t = useTranslations(lang);
@@ -26,13 +27,22 @@ const mapPlaces = places
     coordinates: place.data.coordinates,
     mapZoom: place.data.mapZoom,
   }));
+const pageDescription = 'A personal map of cities and places I have visited, with notes, photos, and impressions collected along the way.';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Places', url: '/places' },
+]);
 ---
 
 <BaseLayout
   title="Places"
-  description="Visited places, map notes, and city memories from the personal archive."
+  description={pageDescription}
   lang={lang}
   canonicalPath="/places"
+  jsonLd={[
+    createCollectionPageSchema({ title: 'Places', description: pageDescription, url: '/places', lang }),
+    breadcrumbs,
+  ]}
 >
   <section class="page-hero">
     <p class="eyebrow">Travel</p>

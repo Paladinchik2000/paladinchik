@@ -1,6 +1,7 @@
 ---
 import Header from './Header.astro';
 import Footer from './Footer.astro';
+import JsonLd from '../seo/JsonLd.astro';
 import PrismaticShaderBackground from '../ui/PrismaticShaderBackground.astro';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -16,6 +17,7 @@ interface Props {
   canonicalPath?: string;
   image?: string;
   type?: string;
+  jsonLd?: unknown;
 }
 
 const {
@@ -25,6 +27,7 @@ const {
   canonicalPath = Astro.url.pathname,
   image,
   type = 'website',
+  jsonLd,
 } = Astro.props;
 const siteName = siteConfig.siteName;
 const pageTitle = title === siteName ? siteConfig.siteTitle : `${title} | ${siteName}`;
@@ -83,6 +86,7 @@ const alternateUrl = new URL(alternatePath, siteConfig.siteUrl).toString();
     <link rel="icon" type="image/png" href="/images/brand/logo-p.png" />
     <link rel="shortcut icon" href="/images/brand/logo-p.png" />
     <link rel="apple-touch-icon" href="/images/brand/logo-p.png" />
+    <JsonLd data={jsonLd} />
     <title>{pageTitle}</title>
   </head>
   <body>

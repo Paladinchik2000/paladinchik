@@ -4,6 +4,7 @@ import BaseLayout from '../../../components/layout/BaseLayout.astro';
 import ArchiveCard from '../../../components/ui/ArchiveCard.astro';
 import ArchiveFilters from '../../../components/ui/ArchiveFilters.astro';
 import { getContentSlug, useTranslations } from '../../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../../lib/structuredData';
 
 const lang = 'ru';
 const t = useTranslations(lang);
@@ -19,9 +20,23 @@ const sortOptions = [
   { value: 'rating', label: 'С высокой оценкой' },
   { value: 'title', label: 'По названию' },
 ];
+const pageDescription = 'Фильмы, которые повлияли на мой вкус, настроение и взгляд на истории.';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Главная', url: '/ru' },
+  { name: 'Кино', url: '/ru/cinema' },
+]);
 ---
 
-<BaseLayout title="Кино" description="Короткие заметки и отзывы о фильмах из личного архива." lang={lang} canonicalPath="/ru/cinema">
+<BaseLayout
+  title="Кино"
+  description={pageDescription}
+  lang={lang}
+  canonicalPath="/ru/cinema"
+  jsonLd={[
+    createCollectionPageSchema({ title: 'Кино', description: pageDescription, url: '/ru/cinema', lang }),
+    breadcrumbs,
+  ]}
+>
   <section class="page-hero">
     <p class="eyebrow">Отзывы</p>
     <h1>Кино</h1>

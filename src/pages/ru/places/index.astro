@@ -4,6 +4,7 @@ import BaseLayout from '../../../components/layout/BaseLayout.astro';
 import ArchiveCard from '../../../components/ui/ArchiveCard.astro';
 import PlacesMap from '../../../components/places/PlacesMap.astro';
 import { getContentSlug, useTranslations } from '../../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../../lib/structuredData';
 
 const lang = 'ru';
 const t = useTranslations(lang);
@@ -26,9 +27,23 @@ const mapPlaces = places
     coordinates: place.data.coordinates,
     mapZoom: place.data.mapZoom,
   }));
+const pageDescription = 'Личная карта городов и мест, где я был: заметки, фотографии и впечатления, собранные по пути.';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Главная', url: '/ru' },
+  { name: 'Места', url: '/ru/places' },
+]);
 ---
 
-<BaseLayout title="Места" description="Посещенные места, заметки на карте и городские воспоминания из личного архива." lang={lang} canonicalPath="/ru/places">
+<BaseLayout
+  title="Места"
+  description={pageDescription}
+  lang={lang}
+  canonicalPath="/ru/places"
+  jsonLd={[
+    createCollectionPageSchema({ title: 'Места', description: pageDescription, url: '/ru/places', lang }),
+    breadcrumbs,
+  ]}
+>
   <section class="page-hero">
     <p class="eyebrow">Путешествия</p>
     <h1>Места</h1>

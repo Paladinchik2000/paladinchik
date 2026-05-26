@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getContentSlug } from '../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
 
 const lang = 'en';
 const projects = (await getCollection('projects'))
@@ -11,13 +12,22 @@ const projects = (await getCollection('projects'))
 const featuredProjects = projects.filter((project) => project.data.featured);
 const getEntrySlug = (entry) => getContentSlug(entry);
 const getChips = (project) => [...(project.data.stack ?? []), ...(project.data.tags ?? [])].slice(0, 6);
+const pageDescription = 'A workspace for things I am building, testing, and learning from.';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Projects', url: '/projects' },
+]);
 ---
 
 <BaseLayout
   title="Projects"
-  description="A workspace for things I am building, testing, and learning from."
+  description={pageDescription}
   lang={lang}
   canonicalPath="/projects"
+  jsonLd={[
+    createCollectionPageSchema({ title: 'Projects', description: pageDescription, url: '/projects', lang }),
+    breadcrumbs,
+  ]}
 >
   <section class="page-hero">
     <p class="eyebrow">Making</p>

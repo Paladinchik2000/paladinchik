@@ -4,6 +4,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import ArchiveCard from '../../components/ui/ArchiveCard.astro';
 import ArchiveFilters from '../../components/ui/ArchiveFilters.astro';
 import { getContentSlug, useTranslations } from '../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
 
 const lang = 'en';
 const t = useTranslations(lang);
@@ -19,13 +20,22 @@ const sortOptions = [
   { value: 'rating', label: 'Highest rated' },
   { value: 'title', label: 'Title A-Z' },
 ];
+const pageDescription = 'Books, notes, ideas, and short reflections I want to remember.';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Library', url: '/library' },
+]);
 ---
 
 <BaseLayout
   title="Library"
-  description="Books, notes, ideas, and short reading reflections from the personal archive."
+  description={pageDescription}
   lang={lang}
   canonicalPath="/library"
+  jsonLd={[
+    createCollectionPageSchema({ title: 'Library', description: pageDescription, url: '/library', lang }),
+    breadcrumbs,
+  ]}
 >
   <section class="page-hero">
     <p class="eyebrow">Reading</p>

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getContentSlug, useTranslations } from '../../i18n/utils';
+import { createBookReviewSchema, createBreadcrumbSchema } from '../../lib/structuredData';
 
 const lang = 'en';
 const t = useTranslations(lang);
@@ -19,15 +20,33 @@ const { book } = Astro.props;
 const { Content } = await render(book);
 const coverStyle = book.data.cover ? `--cover-image: url("${book.data.cover}")` : undefined;
 const slug = getContentSlug(book);
+const canonicalPath = `/library/${slug}`;
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Library', url: '/library' },
+  { name: book.data.title, url: canonicalPath },
+]);
+const reviewSchema = createBookReviewSchema({
+  title: book.data.title,
+  description: book.data.description,
+  url: canonicalPath,
+  image: book.data.cover,
+  bookAuthor: book.data.author,
+  year: book.data.year,
+  rating: book.data.rating,
+  genres: book.data.genres,
+  lang,
+});
 ---
 
 <BaseLayout
   title={book.data.title}
   description={book.data.description ?? `${book.data.title} book note.`}
   lang={lang}
-  canonicalPath={`/library/${slug}`}
+  canonicalPath={canonicalPath}
   image={book.data.cover}
   type="article"
+  jsonLd={[reviewSchema, breadcrumbs]}
 >
   <a class="back-link" href="/library">{t('common.back.library')}</a>
 

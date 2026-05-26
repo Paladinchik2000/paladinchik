@@ -1,7 +1,12 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { createBreadcrumbSchema } from '../../lib/structuredData';
 
 const lang = 'ru';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Главная', url: '/ru' },
+  { name: 'Сейчас', url: '/ru/now' },
+]);
 ---
 
 <BaseLayout
@@ -9,6 +14,7 @@ const lang = 'ru';
   description="Короткая страница текущего фокуса Nikita Paladi и личного архива."
   lang={lang}
   canonicalPath="/ru/now"
+  jsonLd={breadcrumbs}
 >
   <section class="page-hero">
     <p class="eyebrow">Сейчас</p>

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getContentSlug, useTranslations } from '../../i18n/utils';
+import { createBreadcrumbSchema, createCreativeWorkSchema } from '../../lib/structuredData';
 
 const lang = 'en';
 const t = useTranslations(lang);
@@ -23,15 +24,31 @@ const stack = project.data.stack ?? [];
 const tags = project.data.tags ?? [];
 const highlights = project.data.highlights ?? [];
 const slug = getContentSlug(project);
+const canonicalPath = `/projects/${slug}`;
+const breadcrumbs = createBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Projects', url: '/projects' },
+  { name: project.data.title, url: canonicalPath },
+]);
+const projectSchema = createCreativeWorkSchema({
+  title: project.data.title,
+  description: project.data.description,
+  url: canonicalPath,
+  image: project.data.cover,
+  datePublished: project.data.startDate,
+  dateModified: project.data.endDate,
+  lang,
+});
 ---
 
 <BaseLayout
   title={project.data.title}
   description={project.data.description ?? `${project.data.title} project note.`}
   lang={lang}
-  canonicalPath={`/projects/${slug}`}
+  canonicalPath={canonicalPath}
   image={project.data.cover}
   type="article"
+  jsonLd={[projectSchema, breadcrumbs]}
 >
   <a class="back-link" href="/projects">{t('common.back.projects')}</a>
 
