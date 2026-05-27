@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getContentSlug, useTranslations } from '../../i18n/utils';
+import { getExistingPublicImage, getExistingPublicImages } from '../../lib/assets';
 import { createBreadcrumbSchema, createCreativeWorkSchema } from '../../lib/structuredData';
 
 const lang = 'en';
@@ -18,8 +19,9 @@ export async function getStaticPaths() {
 
 const { place } = Astro.props;
 const { Content } = await render(place);
-const coverStyle = place.data.cover ? `--cover-image: url("${place.data.cover}")` : undefined;
-const gallery = place.data.gallery ?? [];
+const coverImage = getExistingPublicImage(place.data.cover);
+const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+const gallery = getExistingPublicImages(place.data.gallery ?? []);
 const galleryTitle = 'Gallery';
 const galleryEmptyText = 'This place is currently saved as a text note without a separate gallery.';
 const slug = getContentSlug(place);
@@ -33,7 +35,7 @@ const placeSchema = createCreativeWorkSchema({
   title: place.data.title,
   description: place.data.description,
   url: canonicalPath,
-  image: place.data.cover,
+  image: coverImage,
   datePublished: place.data.visitedAt,
   lang,
 });
@@ -44,14 +46,20 @@ const placeSchema = createCreativeWorkSchema({
   description={place.data.description ?? `${place.data.title} place note.`}
   lang={lang}
   canonicalPath={canonicalPath}
-  image={place.data.cover}
+  image={coverImage}
   type="article"
   jsonLd={[placeSchema, breadcrumbs]}
 >
   <a class="back-link" href="/places">{t('common.back.places')}</a>
 
-  <div class:list={['detail-cover', { 'has-cover': place.data.cover }]} style={coverStyle} aria-hidden="true">
-    {!place.data.cover && <span>{t('common.noCover')}</span>}
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
+    {!coverImage && (
+      <div class="fallback-cover-content detail-fallback-cover-content">
+        <span class="fallback-cover-type">PLACE</span>
+        <strong>{place.data.title}</strong>
+        <em>{[place.data.city, place.data.country].filter(Boolean).join(' / ')}</em>
+      </div>
+    )}
   </div>
 
   <section class="page-hero detail-hero">

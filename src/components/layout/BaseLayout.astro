@@ -3,11 +3,10 @@ import Header from './Header.astro';
 import Footer from './Footer.astro';
 import JsonLd from '../seo/JsonLd.astro';
 import PrismaticShaderBackground from '../ui/PrismaticShaderBackground.astro';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import type { Locale } from '../../i18n/ui';
 import { siteConfig } from '../../data/site';
 import { getAlternateLocaleUrl } from '../../i18n/utils';
+import { getSocialImage } from '../../lib/assets';
 import '../../styles/global.css';
 
 interface Props {
@@ -33,15 +32,12 @@ const siteName = siteConfig.siteName;
 const pageTitle = title === siteName ? siteConfig.siteTitle : `${title} | ${siteName}`;
 const normalizedPath = canonicalPath === '/' ? '/' : canonicalPath.replace(/\/$/, '');
 const canonicalUrl = new URL(normalizedPath, siteConfig.siteUrl).toString();
-const imageCandidate = typeof image === 'string' && image.length > 0 ? image : siteConfig.defaultSocialImage;
-const publicAssetExists = (assetPath: string) => {
-  if (!assetPath.startsWith('/')) return false;
-  return existsSync(join(process.cwd(), 'public', assetPath.slice(1)));
-};
-const resolvedImage = imageCandidate.startsWith('http') || publicAssetExists(imageCandidate)
-  ? imageCandidate
-  : siteConfig.defaultSocialImage;
-const imageUrl = resolvedImage.startsWith('http') ? resolvedImage : new URL(resolvedImage, siteConfig.siteUrl).toString();
+const resolvedImage = getSocialImage(image);
+const imageUrl = resolvedImage
+  ? resolvedImage.startsWith('http')
+    ? resolvedImage
+    : new URL(resolvedImage, siteConfig.siteUrl).toString()
+  : undefined;
 const ogLocale = lang === 'ru' ? 'ru_RU' : 'en_US';
 const alternateLang = lang === 'ru' ? 'en' : 'ru';
 const alternatePath = getAlternateLocaleUrl(normalizedPath, lang);
@@ -75,12 +71,12 @@ const alternateUrl = new URL(alternatePath, siteConfig.siteUrl).toString();
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={imageUrl} />
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
     <meta property="og:locale" content={ogLocale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={imageUrl} />
+    {imageUrl && <meta name="twitter:image" content={imageUrl} />}
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" href="/images/brand/logo-p.png" />
