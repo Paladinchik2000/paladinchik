@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../../components/layout/BaseLayout.astro';
 import { getContentSlug, useTranslations } from '../../../i18n/utils';
+import { getExistingPublicImage } from '../../../lib/assets';
 import { createBreadcrumbSchema, createCreativeWorkSchema } from '../../../lib/structuredData';
 
 const lang = 'ru';
@@ -18,7 +19,8 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const coverStyle = project.data.cover ? `--cover-image: url("${project.data.cover}")` : undefined;
+const coverImage = getExistingPublicImage(project.data.cover);
+const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
 const dateRange = [project.data.startDate, project.data.endDate].filter(Boolean).join(' - ');
 const stack = project.data.stack ?? [];
 const tags = project.data.tags ?? [];
@@ -34,7 +36,7 @@ const projectSchema = createCreativeWorkSchema({
   title: project.data.title,
   description: project.data.description,
   url: canonicalPath,
-  image: project.data.cover,
+  image: coverImage,
   datePublished: project.data.startDate,
   dateModified: project.data.endDate,
   lang,
@@ -46,14 +48,20 @@ const projectSchema = createCreativeWorkSchema({
   description={project.data.description ?? `${project.data.title}: заметка о проекте.`}
   lang={lang}
   canonicalPath={canonicalPath}
-  image={project.data.cover}
+  image={coverImage}
   type="article"
   jsonLd={[projectSchema, breadcrumbs]}
 >
   <a class="back-link" href="/ru/projects">{t('common.back.projects')}</a>
 
-  <div class:list={['detail-cover', { 'has-cover': project.data.cover }]} style={coverStyle} aria-hidden="true">
-    {!project.data.cover && <span>{t('common.noCover')}</span>}
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
+    {!coverImage && (
+      <div class="fallback-cover-content detail-fallback-cover-content">
+        <span class="fallback-cover-type">PROJECT</span>
+        <strong>{project.data.title}</strong>
+        <em>{[project.data.status, project.data.year].filter(Boolean).join(' / ')}</em>
+      </div>
+    )}
   </div>
 
   <section class="page-hero detail-hero">

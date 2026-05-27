@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getContentSlug, useTranslations } from '../../i18n/utils';
+import { getExistingPublicImage } from '../../lib/assets';
 import { createBookReviewSchema, createBreadcrumbSchema } from '../../lib/structuredData';
 
 const lang = 'en';
@@ -18,7 +19,8 @@ export async function getStaticPaths() {
 
 const { book } = Astro.props;
 const { Content } = await render(book);
-const coverStyle = book.data.cover ? `--cover-image: url("${book.data.cover}")` : undefined;
+const coverImage = getExistingPublicImage(book.data.cover);
+const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
 const slug = getContentSlug(book);
 const canonicalPath = `/library/${slug}`;
 const breadcrumbs = createBreadcrumbSchema([
@@ -30,7 +32,7 @@ const reviewSchema = createBookReviewSchema({
   title: book.data.title,
   description: book.data.description,
   url: canonicalPath,
-  image: book.data.cover,
+  image: coverImage,
   bookAuthor: book.data.author,
   year: book.data.year,
   rating: book.data.rating,
@@ -44,14 +46,20 @@ const reviewSchema = createBookReviewSchema({
   description={book.data.description ?? `${book.data.title} book note.`}
   lang={lang}
   canonicalPath={canonicalPath}
-  image={book.data.cover}
+  image={coverImage}
   type="article"
   jsonLd={[reviewSchema, breadcrumbs]}
 >
   <a class="back-link" href="/library">{t('common.back.library')}</a>
 
-  <div class:list={['detail-cover', { 'has-cover': book.data.cover }]} style={coverStyle} aria-hidden="true">
-    {!book.data.cover && <span>{t('common.noCover')}</span>}
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
+    {!coverImage && (
+      <div class="fallback-cover-content detail-fallback-cover-content">
+        <span class="fallback-cover-type">BOOK</span>
+        <strong>{book.data.title}</strong>
+        <em>{[book.data.author, book.data.year].filter(Boolean).join(' / ')}</em>
+      </div>
+    )}
   </div>
 
   <section class="page-hero detail-hero">
