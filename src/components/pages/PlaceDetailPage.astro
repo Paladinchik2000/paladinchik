@@ -1,0 +1,104 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import type { Locale } from '../../i18n/ui';
+import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { getExistingPublicImage, getExistingPublicImages } from '../../lib/assets';
+import { createBreadcrumbSchema, createCreativeWorkSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+  place: CollectionEntry<'places'>;
+}
+
+const { lang, place } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.places;
+
+const { Content } = await render(place);
+const coverImage = getExistingPublicImage(place.data.cover);
+const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+const gallery = getExistingPublicImages(place.data.gallery ?? []);
+
+const canonicalPath = localizePath(`/places/${getContentSlug(place)}`, lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: copy.title, url: localizePath('/places', lang) },
+  { name: place.data.title, url: canonicalPath },
+]);
+const placeSchema = createCreativeWorkSchema({
+  title: place.data.title,
+  description: place.data.description,
+  url: canonicalPath,
+  image: coverImage,
+  datePublished: place.data.visitedAt,
+  lang,
+});
+---
+
+<BaseLayout
+  title={place.data.title}
+  description={place.data.description ?? format(t.common.noteFallback.place, { title: place.data.title })}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  image={coverImage}
+  type="article"
+  jsonLd={[placeSchema, breadcrumbs]}
+>
+  <a class="back-link" href={localizePath('/places', lang)}>{t.common.back.places}</a>
+
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
+    {!coverImage && (
+      <div class="fallback-cover-content detail-fallback-cover-content">
+        <span class="fallback-cover-type">PLACE</span>
+        <strong>{place.data.title}</strong>
+        <em>{[place.data.city, place.data.country].filter(Boolean).join(' / ')}</em>
+      </div>
+    )}
+  </div>
+
+  <section class="page-hero detail-hero">
+    <p class="eyebrow">{copy.title}</p>
+    <h1>{place.data.title}</h1>
+    <div class="detail-meta">
+      <span>{place.data.country}</span>
+      {place.data.city && <span>{place.data.city}</span>}
+      {place.data.visitedAt && <span>{place.data.visitedAt}</span>}
+    </div>
+    {place.data.tags && (
+      <div class="chip-list">
+        {place.data.tags.map((tag) => <span class="chip">{tag}</span>)}
+      </div>
+    )}
+    {place.data.description && <p>{place.data.description}</p>}
+  </section>
+
+  <article class="prose text-panel glass-card">
+    <Content />
+  </article>
+
+  <section class="page-section" aria-labelledby="place-gallery">
+    <div class="section-heading">
+      <p class="eyebrow">{copy.photosEyebrow}</p>
+      <h2 id="place-gallery">{copy.galleryTitle}</h2>
+    </div>
+    {
+      gallery.length > 0 ? (
+        <div class="gallery-grid">
+          {gallery.map((image, index) => (
+            <div
+              class="gallery-tile"
+              style={`--gallery-image: url("${image}")`}
+              aria-label={format(copy.galleryImageAlt, { title: place.data.title, index: index + 1 })}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="text-panel glass-card gallery-empty">
+          <p>{copy.galleryEmpty}</p>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

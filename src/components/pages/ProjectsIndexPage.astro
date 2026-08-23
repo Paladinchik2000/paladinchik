@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import ProjectCard from '../ui/ProjectCard.astro';
+import type { Locale } from '../../i18n/ui';
+import { getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.projects;
+
+const projects = (await getCollection('projects'))
+  .filter((project) => project.data.lang === lang)
+  .sort(
+    (a, b) =>
+      Number(b.data.featured) - Number(a.data.featured) || (b.data.year ?? 0) - (a.data.year ?? 0),
+  );
+
+const featuredProjects = projects.filter((project) => project.data.featured);
+
+type ProjectEntry = (typeof projects)[number];
+
+/** Maps a content entry onto the props ProjectCard expects. */
+const toCardProps = (project: ProjectEntry) => ({
+  title: project.data.title,
+  href: localizePath(`/projects/${getContentSlug(project)}`, lang),
+  status: project.data.status ?? copy.defaultStatus,
+  year: project.data.year,
+  role: project.data.role,
+  description: project.data.description,
+  chips: [...(project.data.stack ?? []), ...(project.data.tags ?? [])].slice(0, 6),
+  cover: project.data.cover,
+  url: project.data.url,
+  github: project.data.github,
+  openLabel: t.common.openProject,
+  liveSiteLabel: t.common.liveSite,
+  githubLabel: t.common.github,
+});
+
+const canonicalPath = localizePath('/projects', lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: copy.title, url: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={[
+    createCollectionPageSchema({
+      title: copy.title,
+      description: copy.description,
+      url: canonicalPath,
+      lang,
+    }),
+    breadcrumbs,
+  ]}
+>
+  <section class="page-hero">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1>{copy.title}</h1>
+    <p>{copy.description}</p>
+  </section>
+
+  {
+    featuredProjects.length > 0 && (
+      <section class="section-block" aria-labelledby="featured-projects">
+        <div class="section-heading">
+          <p class="eyebrow">{copy.featuredEyebrow}</p>
+          <h2 id="featured-projects">{copy.featuredTitle}</h2>
+        </div>
+        <div class="project-grid">
+          {featuredProjects.map((project) => <ProjectCard {...toCardProps(project)} />)}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="page-section" aria-labelledby="all-projects">
+    <div class="section-heading">
+      <p class="eyebrow">{copy.archiveEyebrow}</p>
+      <h2 id="all-projects">{copy.allProjectsTitle}</h2>
+    </div>
+    <div class="project-grid">
+      {projects.map((project) => <ProjectCard {...toCardProps(project)} />)}
+    </div>
+  </section>
+</BaseLayout>

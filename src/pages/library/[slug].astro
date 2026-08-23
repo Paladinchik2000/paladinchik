@@ -1,12 +1,7 @@
 ---
-import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../components/layout/BaseLayout.astro';
-import { getContentSlug, useTranslations } from '../../i18n/utils';
-import { getExistingPublicImage } from '../../lib/assets';
-import { createBookReviewSchema, createBreadcrumbSchema } from '../../lib/structuredData';
-
-const lang = 'en';
-const t = useTranslations(lang);
+import { getCollection } from 'astro:content';
+import BookDetailPage from '../../components/pages/BookDetailPage.astro';
+import { getContentSlug } from '../../i18n/utils';
 
 export async function getStaticPaths() {
   const books = (await getCollection('books')).filter((book) => book.data.lang === 'en');
@@ -18,67 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { book } = Astro.props;
-const { Content } = await render(book);
-const coverImage = getExistingPublicImage(book.data.cover);
-const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
-const slug = getContentSlug(book);
-const canonicalPath = `/library/${slug}`;
-const breadcrumbs = createBreadcrumbSchema([
-  { name: 'Home', url: '/' },
-  { name: 'Library', url: '/library' },
-  { name: book.data.title, url: canonicalPath },
-]);
-const reviewSchema = createBookReviewSchema({
-  title: book.data.title,
-  description: book.data.description,
-  url: canonicalPath,
-  image: coverImage,
-  bookAuthor: book.data.author,
-  year: book.data.year,
-  rating: book.data.rating,
-  genres: book.data.genres,
-  lang,
-});
 ---
 
-<BaseLayout
-  title={book.data.title}
-  description={book.data.description ?? `${book.data.title} book note.`}
-  lang={lang}
-  canonicalPath={canonicalPath}
-  image={coverImage}
-  type="article"
-  jsonLd={[reviewSchema, breadcrumbs]}
->
-  <a class="back-link" href="/library">{t('common.back.library')}</a>
-
-  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
-    {!coverImage && (
-      <div class="fallback-cover-content detail-fallback-cover-content">
-        <span class="fallback-cover-type">BOOK</span>
-        <strong>{book.data.title}</strong>
-        <em>{[book.data.author, book.data.year].filter(Boolean).join(' / ')}</em>
-      </div>
-    )}
-  </div>
-
-  <section class="page-hero detail-hero">
-    <p class="eyebrow">Library</p>
-    <h1>{book.data.title}</h1>
-    <div class="detail-meta">
-      <span>{book.data.author}</span>
-      {book.data.year && <span>{book.data.year}</span>}
-      {book.data.rating && <span>{book.data.rating}/10</span>}
-    </div>
-    {book.data.genres && (
-      <div class="chip-list">
-        {book.data.genres.map((genre) => <span class="chip">{genre}</span>)}
-      </div>
-    )}
-    {book.data.description && <p>{book.data.description}</p>}
-  </section>
-
-  <article class="prose text-panel glass-card">
-    <Content />
-  </article>
-</BaseLayout>
+<BookDetailPage lang="en" book={book} />

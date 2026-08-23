@@ -1,0 +1,82 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import type { Locale } from '../../i18n/ui';
+import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { getExistingPublicImage } from '../../lib/assets';
+import { createBookReviewSchema, createBreadcrumbSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+  book: CollectionEntry<'books'>;
+}
+
+const { lang, book } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.library;
+
+const { Content } = await render(book);
+const coverImage = getExistingPublicImage(book.data.cover);
+const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+
+const canonicalPath = localizePath(`/library/${getContentSlug(book)}`, lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: copy.title, url: localizePath('/library', lang) },
+  { name: book.data.title, url: canonicalPath },
+]);
+const reviewSchema = createBookReviewSchema({
+  title: book.data.title,
+  description: book.data.description,
+  url: canonicalPath,
+  image: coverImage,
+  bookAuthor: book.data.author,
+  year: book.data.year,
+  rating: book.data.rating,
+  genres: book.data.genres,
+  lang,
+});
+---
+
+<BaseLayout
+  title={book.data.title}
+  description={book.data.description ?? format(t.common.noteFallback.book, { title: book.data.title })}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  image={coverImage}
+  type="article"
+  jsonLd={[reviewSchema, breadcrumbs]}
+>
+  <a class="back-link" href={localizePath('/library', lang)}>{t.common.back.library}</a>
+
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
+    {!coverImage && (
+      <div class="fallback-cover-content detail-fallback-cover-content">
+        <span class="fallback-cover-type">BOOK</span>
+        <strong>{book.data.title}</strong>
+        <em>{[book.data.author, book.data.year].filter(Boolean).join(' / ')}</em>
+      </div>
+    )}
+  </div>
+
+  <section class="page-hero detail-hero">
+    <p class="eyebrow">{copy.title}</p>
+    <h1>{book.data.title}</h1>
+    <div class="detail-meta">
+      <span>{book.data.author}</span>
+      {book.data.year && <span>{book.data.year}</span>}
+      {book.data.rating && <span>{book.data.rating}/10</span>}
+    </div>
+    {book.data.genres && (
+      <div class="chip-list">
+        {book.data.genres.map((genre) => <span class="chip">{genre}</span>)}
+      </div>
+    )}
+    {book.data.description && <p>{book.data.description}</p>}
+  </section>
+
+  <article class="prose text-panel glass-card">
+    <Content />
+  </article>
+</BaseLayout>

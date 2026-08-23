@@ -1,12 +1,7 @@
 ---
-import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../../components/layout/BaseLayout.astro';
-import { getContentSlug, useTranslations } from '../../../i18n/utils';
-import { getExistingPublicImage } from '../../../lib/assets';
-import { createBreadcrumbSchema, createCreativeWorkSchema } from '../../../lib/structuredData';
-
-const lang = 'ru';
-const t = useTranslations(lang);
+import { getCollection } from 'astro:content';
+import ProjectDetailPage from '../../../components/pages/ProjectDetailPage.astro';
+import { getContentSlug } from '../../../i18n/utils';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects')).filter((project) => project.data.lang === 'ru');
@@ -18,90 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { Content } = await render(project);
-const coverImage = getExistingPublicImage(project.data.cover);
-const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
-const dateRange = [project.data.startDate, project.data.endDate].filter(Boolean).join(' - ');
-const stack = project.data.stack ?? [];
-const tags = project.data.tags ?? [];
-const highlights = project.data.highlights ?? [];
-const slug = getContentSlug(project);
-const canonicalPath = `/ru/projects/${slug}`;
-const breadcrumbs = createBreadcrumbSchema([
-  { name: 'Главная', url: '/ru' },
-  { name: 'Проекты', url: '/ru/projects' },
-  { name: project.data.title, url: canonicalPath },
-]);
-const projectSchema = createCreativeWorkSchema({
-  title: project.data.title,
-  description: project.data.description,
-  url: canonicalPath,
-  image: coverImage,
-  datePublished: project.data.startDate,
-  dateModified: project.data.endDate,
-  lang,
-});
 ---
 
-<BaseLayout
-  title={project.data.title}
-  description={project.data.description ?? `${project.data.title}: заметка о проекте.`}
-  lang={lang}
-  canonicalPath={canonicalPath}
-  image={coverImage}
-  type="article"
-  jsonLd={[projectSchema, breadcrumbs]}
->
-  <a class="back-link" href="/ru/projects">{t('common.back.projects')}</a>
-
-  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
-    {!coverImage && (
-      <div class="fallback-cover-content detail-fallback-cover-content">
-        <span class="fallback-cover-type">PROJECT</span>
-        <strong>{project.data.title}</strong>
-        <em>{[project.data.status, project.data.year].filter(Boolean).join(' / ')}</em>
-      </div>
-    )}
-  </div>
-
-  <section class="page-hero detail-hero">
-    <p class="eyebrow">Проекты</p>
-    <h1>{project.data.title}</h1>
-    <div class="detail-meta">
-      {project.data.status && <span>{project.data.status}</span>}
-      {project.data.year && <span>{project.data.year}</span>}
-      {dateRange && <span>{dateRange}</span>}
-      {project.data.role && <span>{project.data.role}</span>}
-    </div>
-    {project.data.description && <p>{project.data.description}</p>}
-    <div class="external-links">
-      {project.data.url && <a class="button button-primary" href={project.data.url}>Сайт</a>}
-      {project.data.github && <a class="button button-secondary" href={project.data.github}>GitHub</a>}
-    </div>
-  </section>
-
-  <section class="project-detail-grid">
-    <article class="text-panel glass-card">
-      <h2>Стек</h2>
-      <div class="chip-list">
-        {[...stack, ...tags].map((chip) => <span class="chip">{chip}</span>)}
-      </div>
-    </article>
-    <article class="text-panel glass-card">
-      <h2>Ключевые моменты</h2>
-      {
-        highlights.length > 0 ? (
-          <ul class="clean-list">
-            {highlights.map((highlight) => <li>{highlight}</li>)}
-          </ul>
-        ) : (
-          <p>Для этой записи ключевые моменты отдельно не выделены.</p>
-        )
-      }
-    </article>
-  </section>
-
-  <article class="prose text-panel glass-card">
-    <Content />
-  </article>
-</BaseLayout>
+<ProjectDetailPage lang="ru" project={project} />

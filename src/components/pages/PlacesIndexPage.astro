@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import ArchiveCard from '../ui/ArchiveCard.astro';
+import PlacesMap from '../places/PlacesMap.astro';
+import type { Locale } from '../../i18n/ui';
+import { getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.places;
+
+const places = (await getCollection('places'))
+  .filter((place) => place.data.lang === lang)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const hasValidCoordinates = (
+  coordinates: [number, number] | undefined,
+): coordinates is [number, number] =>
+  Array.isArray(coordinates) && coordinates.length === 2 && coordinates.every(Number.isFinite);
+
+const mapPlaces = places
+  .filter((place) => hasValidCoordinates(place.data.coordinates))
+  .map((place) => ({
+    title: place.data.title,
+    location: [place.data.city, place.data.country].filter(Boolean).join(', '),
+    description: place.data.description,
+    href: localizePath(`/places/${getContentSlug(place)}`, lang),
+    coordinates: place.data.coordinates as [number, number],
+    mapZoom: place.data.mapZoom,
+  }));
+
+const canonicalPath = localizePath('/places', lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: copy.title, url: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={[
+    createCollectionPageSchema({
+      title: copy.title,
+      description: copy.description,
+      url: canonicalPath,
+      lang,
+    }),
+    breadcrumbs,
+  ]}
+>
+  <section class="page-hero">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1>{copy.title}</h1>
+    <p>{copy.description}</p>
+  </section>
+
+  <PlacesMap places={mapPlaces} lang={lang} />
+
+  <section class="page-section archive-grid" aria-label={copy.ariaLabel}>
+    {
+      places.map((place) => (
+        <ArchiveCard
+          title={place.data.title}
+          description={place.data.description}
+          href={localizePath(`/places/${getContentSlug(place)}`, lang)}
+          eyebrow={place.data.country}
+          cover={place.data.cover}
+          coverType="PLACE"
+          fallbackMeta={[place.data.city, place.data.country]}
+          meta={[place.data.city, place.data.visitedAt]}
+          chips={place.data.tags}
+          actionLabel={t.common.readNote}
+          noCoverLabel={t.common.noCover}
+        />
+      ))
+    }
+  </section>
+</BaseLayout>

@@ -1,12 +1,7 @@
 ---
-import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../../components/layout/BaseLayout.astro';
-import { getContentSlug, useTranslations } from '../../../i18n/utils';
-import { getExistingPublicImage, getExistingPublicImages } from '../../../lib/assets';
-import { createBreadcrumbSchema, createCreativeWorkSchema } from '../../../lib/structuredData';
-
-const lang = 'ru';
-const t = useTranslations(lang);
+import { getCollection } from 'astro:content';
+import PlaceDetailPage from '../../../components/pages/PlaceDetailPage.astro';
+import { getContentSlug } from '../../../i18n/utils';
 
 export async function getStaticPaths() {
   const places = (await getCollection('places')).filter((place) => place.data.lang === 'ru');
@@ -18,89 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { place } = Astro.props;
-const { Content } = await render(place);
-const coverImage = getExistingPublicImage(place.data.cover);
-const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
-const gallery = getExistingPublicImages(place.data.gallery ?? []);
-const slug = getContentSlug(place);
-const canonicalPath = `/ru/places/${slug}`;
-const breadcrumbs = createBreadcrumbSchema([
-  { name: 'Главная', url: '/ru' },
-  { name: 'Места', url: '/ru/places' },
-  { name: place.data.title, url: canonicalPath },
-]);
-const placeSchema = createCreativeWorkSchema({
-  title: place.data.title,
-  description: place.data.description,
-  url: canonicalPath,
-  image: coverImage,
-  datePublished: place.data.visitedAt,
-  lang,
-});
 ---
 
-<BaseLayout
-  title={place.data.title}
-  description={place.data.description ?? `${place.data.title}: заметка о месте.`}
-  lang={lang}
-  canonicalPath={canonicalPath}
-  image={coverImage}
-  type="article"
-  jsonLd={[placeSchema, breadcrumbs]}
->
-  <a class="back-link" href="/ru/places">{t('common.back.places')}</a>
-
-  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
-    {!coverImage && (
-      <div class="fallback-cover-content detail-fallback-cover-content">
-        <span class="fallback-cover-type">PLACE</span>
-        <strong>{place.data.title}</strong>
-        <em>{[place.data.city, place.data.country].filter(Boolean).join(' / ')}</em>
-      </div>
-    )}
-  </div>
-
-  <section class="page-hero detail-hero">
-    <p class="eyebrow">Места</p>
-    <h1>{place.data.title}</h1>
-    <div class="detail-meta">
-      <span>{place.data.country}</span>
-      {place.data.city && <span>{place.data.city}</span>}
-      {place.data.visitedAt && <span>{place.data.visitedAt}</span>}
-    </div>
-    {place.data.tags && (
-      <div class="chip-list">
-        {place.data.tags.map((tag) => <span class="chip">{tag}</span>)}
-      </div>
-    )}
-    {place.data.description && <p>{place.data.description}</p>}
-  </section>
-
-  <article class="prose text-panel glass-card">
-    <Content />
-  </article>
-
-  <section class="page-section" aria-labelledby="place-gallery">
-    <div class="section-heading">
-      <p class="eyebrow">Фото</p>
-      <h2 id="place-gallery">Галерея</h2>
-    </div>
-    {
-      gallery.length > 0 ? (
-        <div class="gallery-grid">
-          {gallery.map((image, index) => (
-            <div
-              class="gallery-tile"
-              style={`--gallery-image: url("${image}")`}
-              aria-label={`${place.data.title}: изображение ${index + 1}`}
-            />
-          ))}
-        </div>
-      ) : (
-        <div class="text-panel glass-card gallery-empty">
-          <p>Для этого места сохранена текстовая заметка без отдельной галереи.</p>
-        </div>
-      )
-    }
-  </section>
-</BaseLayout>
+<PlaceDetailPage lang="ru" place={place} />

@@ -2,47 +2,53 @@
 import LanguageSwitcher from '../ui/LanguageSwitcher.astro';
 import BrandLogo from '../ui/BrandLogo.astro';
 import type { Locale } from '../../i18n/ui';
-import { getAlternateLocaleUrl, getLocalizedUrl, stripLocaleFromPath, useTranslations } from '../../i18n/utils';
+import {
+  getAlternateLocaleUrl,
+  getTranslations,
+  localizePath,
+  stripLocaleFromPath,
+} from '../../i18n/utils';
 
 interface Props {
   lang?: Locale;
 }
 
 const { lang = 'en' } = Astro.props;
-const t = useTranslations(lang);
+const t = getTranslations(lang);
+
 const navItems = [
-  { href: '/', label: t('nav.home') },
-  { href: '/about', label: t('nav.about') },
-  { href: '/cinema', label: t('nav.cinema') },
-  { href: '/library', label: t('nav.library') },
-  { href: '/places', label: t('nav.places') },
-  { href: '/projects', label: t('nav.projects') },
+  { href: '/', label: t.nav.home },
+  { href: '/about', label: t.nav.about },
+  { href: '/cinema', label: t.nav.cinema },
+  { href: '/library', label: t.nav.library },
+  { href: '/places', label: t.nav.places },
+  { href: '/projects', label: t.nav.projects },
 ];
 
 const currentPath = stripLocaleFromPath(Astro.url.pathname);
-const currentUrl = getLocalizedUrl(currentPath, lang);
+const currentUrl = localizePath(currentPath, lang);
 const alternateUrl = getAlternateLocaleUrl(Astro.url.pathname, lang);
 const cvIsActive = currentPath === '/cv';
 ---
 
 <header class="site-header" data-site-header>
-  <a class="brand-mark" href={getLocalizedUrl('/', lang)} aria-label="Nikita Paladi home">
+  <a class="brand-mark" href={localizePath('/', lang)} aria-label={t.common.homeLinkLabel}>
     <BrandLogo variant="nav" withText />
   </a>
 
   <button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
     <span class="mobile-nav-toggle-lines" aria-hidden="true"></span>
-    <span class="sr-only">Menu</span>
+    <span class="sr-only">{t.common.menu}</span>
   </button>
 
-  <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+  <nav id="site-nav" class="site-nav" aria-label={t.common.primaryNavLabel}>
     {
       navItems.map((item) => {
         const itemPath = item.href.replace(/\/$/, '') || '/';
         const isActive = currentPath === itemPath;
 
         return (
-          <a href={getLocalizedUrl(item.href, lang)} aria-current={isActive ? 'page' : undefined}>
+          <a href={localizePath(item.href, lang)} aria-current={isActive ? 'page' : undefined}>
             {item.label}
           </a>
         );
@@ -51,10 +57,19 @@ const cvIsActive = currentPath === '/cv';
   </nav>
 
   <div class="header-actions">
-    <a class="header-cv-link" href={getLocalizedUrl('/cv', lang)} aria-current={cvIsActive ? 'page' : undefined}>
-      {t('nav.cv')}
+    <a
+      class="header-cv-link"
+      href={localizePath('/cv', lang)}
+      aria-current={cvIsActive ? 'page' : undefined}
+    >
+      {t.nav.cv}
     </a>
-    <LanguageSwitcher lang={lang} currentUrl={currentUrl} alternateUrl={alternateUrl} />
+    <LanguageSwitcher
+      lang={lang}
+      currentUrl={currentUrl}
+      alternateUrl={alternateUrl}
+      label={t.common.languageSwitcherLabel}
+    />
   </div>
 </header>
 
@@ -74,11 +89,12 @@ const cvIsActive = currentPath === '/cv';
 
       toggle.addEventListener('click', () => {
         const isOpen = header.getAttribute('data-menu-open') === 'true';
-        header.toggleAttribute('data-menu-open', !isOpen);
-        if (!isOpen) {
+        if (isOpen) {
+          closeMenu();
+        } else {
           header.setAttribute('data-menu-open', 'true');
+          toggle.setAttribute('aria-expanded', 'true');
         }
-        toggle.setAttribute('aria-expanded', String(!isOpen));
       });
 
       nav.querySelectorAll('a').forEach((link) => {

@@ -1,0 +1,107 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import type { Locale } from '../../i18n/ui';
+import { siteConfig } from '../../data/site';
+import { getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { createBreadcrumbSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+
+const selectedProjects = (await getCollection('projects'))
+  .filter((project) => project.data.lang === lang && project.data.featured)
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+
+const canonicalPath = localizePath('/cv', lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: t.pages.cv, url: canonicalPath },
+]);
+
+const emailAddress = siteConfig.social.email.replace(/^mailto:/, '');
+// Split around the {email} token so the address can render as a real link
+// rather than being injected as raw HTML.
+const [contactBefore, contactAfter] = t.cv.contactBody.split('{email}');
+---
+
+<BaseLayout
+  title={t.pages.cv}
+  description={t.cv.metaDescription}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={breadcrumbs}
+>
+  <section class="page-hero cv-hero">
+    <p class="eyebrow">{t.cv.eyebrow}</p>
+    <h1>{siteConfig.author}</h1>
+    <p>{t.cv.tagline}</p>
+    <div class="page-actions">
+      <a class="button button-primary" href="/files/cv.pdf" download="Nikita-Paladi-CV.pdf">
+        {t.cv.downloadCv}
+      </a>
+      <a class="button button-secondary" href={localizePath('/projects', lang)}>{t.cv.viewProjects}</a>
+    </div>
+  </section>
+
+  <section class="cv-grid" aria-label={t.cv.ariaLabel}>
+    <article class="text-panel glass-card cv-panel-wide">
+      <h2>{t.cv.profileTitle}</h2>
+      <p>{t.cv.profileBody}</p>
+    </article>
+
+    <article class="text-panel glass-card">
+      <h2>{t.cv.focusTitle}</h2>
+      <ul class="clean-list">
+        {t.cv.focusItems.map((item) => <li>{item}</li>)}
+      </ul>
+    </article>
+
+    <article class="text-panel glass-card">
+      <h2>{t.cv.skillsTitle}</h2>
+      <div class="chip-list">
+        {t.cv.skills.map((skill) => <span class="chip">{skill}</span>)}
+      </div>
+    </article>
+
+    <article class="text-panel glass-card cv-panel-wide">
+      <h2>{t.cv.selectedProjectsTitle}</h2>
+      <div class="cv-project-list">
+        {
+          selectedProjects.map((project) => (
+            <a href={localizePath(`/projects/${getContentSlug(project)}`, lang)}>
+              <span>{project.data.year}</span>
+              <strong>{project.data.title}</strong>
+              <em>{project.data.description}</em>
+            </a>
+          ))
+        }
+      </div>
+    </article>
+
+    <article class="text-panel glass-card">
+      <h2>{t.cv.timelineTitle}</h2>
+      <ul class="timeline-list">
+        {
+          t.cv.timeline.map((entry) => (
+            <li>
+              <span>{entry.year}</span>
+              {entry.body}
+            </li>
+          ))
+        }
+      </ul>
+    </article>
+
+    <article class="text-panel glass-card">
+      <h2>{t.cv.contactTitle}</h2>
+      <p>
+        {contactBefore}<a href={siteConfig.social.email}>{emailAddress}</a>{contactAfter}
+      </p>
+    </article>
+  </section>
+</BaseLayout>

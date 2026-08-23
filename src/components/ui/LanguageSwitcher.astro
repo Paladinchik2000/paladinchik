@@ -5,12 +5,13 @@ interface Props {
   lang?: Locale;
   currentUrl: string;
   alternateUrl: string;
+  label?: string;
 }
 
-const { lang = 'en', currentUrl, alternateUrl } = Astro.props;
+const { lang = 'en', currentUrl, alternateUrl, label = 'Language switcher' } = Astro.props;
 ---
 
-<div class="language-switcher" aria-label="Language switcher">
+<div class="language-switcher" aria-label={label}>
   <a href={lang === 'en' ? currentUrl : alternateUrl} aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
   <a href={lang === 'ru' ? currentUrl : alternateUrl} aria-current={lang === 'ru' ? 'true' : undefined}>RU</a>
 </div>

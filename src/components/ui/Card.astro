@@ -4,9 +4,10 @@ interface Props {
   description: string;
   href?: string;
   eyebrow?: string;
+  actionLabel?: string;
 }
 
-const { title, description, href, eyebrow } = Astro.props;
+const { title, description, href, eyebrow, actionLabel = 'Open' } = Astro.props;
 const Component = href ? 'a' : 'article';
 const attributes = href ? { href } : {};
 ---
@@ -15,5 +16,5 @@ const attributes = href ? { href } : {};
   {eyebrow && <span class="card-eyebrow">{eyebrow}</span>}
   <h3>{title}</h3>
   <p>{description}</p>
-  {href && <span class="card-link">Open</span>}
+  {href && <span class="card-link">{actionLabel}</span>}
 </Component>

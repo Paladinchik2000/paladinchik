@@ -1,5 +1,8 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
+// Imported from `zod` directly: the `z` re-export from `astro:content` is
+// deprecated in Astro 6.
+import { z } from 'zod';
 
 const movies = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/movies' }),

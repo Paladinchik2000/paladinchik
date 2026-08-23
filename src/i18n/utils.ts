@@ -1,28 +1,28 @@
-import { defaultLocale, type Locale, locales, ui } from './ui';
+import { defaultLocale, type Locale, locales, type Translations, ui } from './ui';
 
 export function isLocale(locale: string): locale is Locale {
   return locales.includes(locale as Locale);
 }
 
-export function getLangFromUrl(url: URL): Locale {
-  const [, maybeLocale] = url.pathname.split('/');
-  return isLocale(maybeLocale) ? maybeLocale : defaultLocale;
+/**
+ * Typed access to a locale's full copy object.
+ *
+ * Every page pulls its text from here, so English and Russian stay in lockstep:
+ * `Translations` is a compile-time contract, and a missing or renamed key is a
+ * type error rather than a page that silently ships the wrong language.
+ */
+export function getTranslations(lang: Locale): Translations {
+  return ui[lang];
 }
 
-export function useTranslations(lang: Locale) {
-  return function t(path: string): string {
-    const value = path.split('.').reduce<unknown>((current, key) => {
-      if (current && typeof current === 'object' && key in current) {
-        return (current as Record<string, unknown>)[key];
-      }
-
-      return undefined;
-    }, ui[lang]);
-
-    return typeof value === 'string' ? value : path;
-  };
+/** Fills `{placeholder}` tokens in a translation string. */
+export function format(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
+    key in values ? String(values[key]) : match,
+  );
 }
 
+/** Rewrites a locale-free path onto the given locale (`/cv` -> `/ru/cv`). */
 export function localizePath(path: string, lang: Locale): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   const pathWithoutLocale = stripLocaleFromPath(normalizedPath);
@@ -48,10 +48,6 @@ export function stripLocaleFromPath(path: string): string {
   return normalizedPath;
 }
 
-export function getLocalizedUrl(path: string, lang: Locale): string {
-  return localizePath(path, lang);
-}
-
 export function getAlternateLocale(lang: Locale): Locale {
   return lang === 'en' ? 'ru' : 'en';
 }
@@ -60,6 +56,7 @@ export function getAlternateLocaleUrl(path: string, lang: Locale): string {
   return localizePath(stripLocaleFromPath(path), getAlternateLocale(lang));
 }
 
+/** Strips the `.en` / `.ru` suffix content files use to pair translations. */
 export function cleanSlug(id: string): string {
   return id.replace(/\.(en|ru)$/, '').replace(/(en|ru)$/, '');
 }

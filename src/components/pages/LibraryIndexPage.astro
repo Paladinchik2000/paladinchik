@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import ArchiveCard from '../ui/ArchiveCard.astro';
+import ArchiveFilters from '../ui/ArchiveFilters.astro';
+import type { Locale } from '../../i18n/ui';
+import { getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.library;
+
+const books = (await getCollection('books'))
+  .filter((book) => book.data.lang === lang)
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+
+const genres = [...new Set(books.flatMap((book) => book.data.genres ?? []))].sort((a, b) =>
+  a.localeCompare(b),
+);
+
+const canonicalPath = localizePath('/library', lang);
+const gridId = 'library-archive';
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: copy.title, url: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={[
+    createCollectionPageSchema({
+      title: copy.title,
+      description: copy.description,
+      url: canonicalPath,
+      lang,
+    }),
+    breadcrumbs,
+  ]}
+>
+  <section class="page-hero">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1>{copy.title}</h1>
+    <p>{copy.description}</p>
+  </section>
+
+  <ArchiveFilters targetId={gridId} groups={genres} labels={copy.filters} />
+
+  <section id={gridId} class="page-section archive-grid" aria-label={copy.ariaLabel}>
+    {
+      books.map((book) => (
+        <ArchiveCard
+          title={book.data.title}
+          description={book.data.description}
+          href={localizePath(`/library/${getContentSlug(book)}`, lang)}
+          eyebrow={book.data.author}
+          cover={book.data.cover}
+          coverType="BOOK"
+          fallbackMeta={[book.data.author, book.data.year]}
+          meta={[book.data.year, book.data.rating && `${book.data.rating}/10`, book.data.favorite && t.common.favorite]}
+          chips={book.data.genres}
+          actionLabel={t.common.readNote}
+          noCoverLabel={t.common.noCover}
+          filterText={[book.data.title, book.data.author, book.data.description, ...(book.data.genres ?? [])]
+            .filter(Boolean)
+            .join(' ')}
+          filterGroups={book.data.genres}
+          filterFavorite={book.data.favorite}
+          sortTitle={book.data.title}
+          sortYear={book.data.year}
+          sortRating={book.data.rating}
+        />
+      ))
+    }
+  </section>
+
+  <div class="archive-empty-state glass-card" data-archive-empty={gridId} hidden>
+    <p>{copy.filters.empty}</p>
+  </div>
+</BaseLayout>

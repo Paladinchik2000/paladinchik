@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layout/BaseLayout.astro';
+import type { Locale } from '../../i18n/ui';
+import { getTranslations, localizePath } from '../../i18n/utils';
+import { createBreadcrumbSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+  /** Which prose page to render; both share the hero + stacked-panels shape. */
+  page: 'about' | 'now';
+}
+
+const { lang, page } = Astro.props;
+const t = getTranslations(lang);
+const copy = t[page];
+const canonicalPath = localizePath(`/${page}`, lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: t.pages[page], url: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={t.pages[page]}
+  description={copy.metaDescription}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={breadcrumbs}
+>
+  <section class="page-hero">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1>{t.pages[page]}</h1>
+    <p>{copy.intro}</p>
+  </section>
+
+  <section class="page-section content-list" aria-label={copy.ariaLabel}>
+    {
+      copy.sections.map((section) => (
+        <article class="text-panel glass-card">
+          <h2>{section.title}</h2>
+          <p>{section.body}</p>
+        </article>
+      ))
+    }
+  </section>
+</BaseLayout>

@@ -1,0 +1,71 @@
+---
+import { getExistingPublicImage } from '../../lib/assets';
+
+interface Props {
+  title: string;
+  href: string;
+  status: string;
+  year?: number;
+  role?: string;
+  description?: string;
+  chips: string[];
+  cover?: string;
+  url?: string;
+  github?: string;
+  openLabel: string;
+  liveSiteLabel: string;
+  githubLabel: string;
+}
+
+const {
+  title,
+  href,
+  status,
+  year,
+  role,
+  description,
+  chips,
+  cover,
+  url,
+  github,
+  openLabel,
+  liveSiteLabel,
+  githubLabel,
+} = Astro.props;
+
+const coverImage = getExistingPublicImage(cover);
+const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+---
+
+<article class="project-card glass-card">
+  <div
+    class:list={['archive-cover', 'project-cover', { 'has-cover': coverImage }]}
+    style={coverStyle}
+    aria-hidden="true"
+  >
+    {!coverImage && (
+      <div class="fallback-cover-content">
+        <span class="fallback-cover-type">PROJECT</span>
+        <strong>{title}</strong>
+        {chips.length > 0 && <em>{chips.slice(0, 3).join(' / ')}</em>}
+      </div>
+    )}
+  </div>
+  <a class="project-card-main" href={href}>
+    <span class="card-eyebrow">{status}</span>
+    <h3>{title}</h3>
+    <div class="meta-row">
+      {year && <span>{year}</span>}
+      {role && <span>{role}</span>}
+    </div>
+    {description && <p>{description}</p>}
+    <div class="chip-list">
+      {chips.map((chip) => <span class="chip">{chip}</span>)}
+    </div>
+    <span class="card-link">{openLabel}</span>
+  </a>
+  <div class="external-links project-card-links">
+    {url && <a class="button button-secondary" href={url}>{liveSiteLabel}</a>}
+    {github && <a class="button button-secondary" href={github}>{githubLabel}</a>}
+  </div>
+</article>

@@ -174,7 +174,8 @@
       return;
     }
 
-    if (!renderer.capabilities.isWebGL2 && !renderer.capabilities.isWebGL1) {
+    // three.js dropped WebGL1 support, so WebGL2 is the only capability to check.
+    if (!renderer.capabilities.isWebGL2) {
       root.dataset.webgl = 'unsupported';
       renderer.dispose();
       return;
@@ -202,7 +203,10 @@
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    const clock = new THREE.Clock();
+    // Elapsed shader time is accumulated manually so pausing on tab-hide
+    // resumes where it left off instead of jumping.
+    let elapsedSeconds = 0;
+    let lastFrameTime = 0;
     let frameId = 0;
     let running = false;
 
@@ -218,12 +222,14 @@
     };
 
     const render = () => {
-      uniforms.uTime.value = clock.getElapsedTime();
+      uniforms.uTime.value = elapsedSeconds;
       renderer.render(scene, camera);
     };
 
-    const animate = () => {
+    const animate = (now: number) => {
       if (!running) return;
+      elapsedSeconds += (now - lastFrameTime) / 1000;
+      lastFrameTime = now;
       render();
       frameId = window.requestAnimationFrame(animate);
     };
@@ -231,7 +237,7 @@
     const start = () => {
       if (running || document.visibilityState === 'hidden') return;
       running = true;
-      clock.start();
+      lastFrameTime = performance.now();
       frameId = window.requestAnimationFrame(animate);
     };
 

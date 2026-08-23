@@ -1,0 +1,81 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import type { Locale } from '../../i18n/ui';
+import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { getExistingPublicImage } from '../../lib/assets';
+import { createBreadcrumbSchema, createMovieReviewSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+  movie: CollectionEntry<'movies'>;
+}
+
+const { lang, movie } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.cinema;
+
+const { Content } = await render(movie);
+const coverImage = getExistingPublicImage(movie.data.cover);
+const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+
+const canonicalPath = localizePath(`/cinema/${getContentSlug(movie)}`, lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: copy.title, url: localizePath('/cinema', lang) },
+  { name: movie.data.title, url: canonicalPath },
+]);
+const reviewSchema = createMovieReviewSchema({
+  title: movie.data.title,
+  description: movie.data.description,
+  url: canonicalPath,
+  image: coverImage,
+  year: movie.data.year,
+  rating: movie.data.rating,
+  genres: movie.data.genres,
+  lang,
+});
+---
+
+<BaseLayout
+  title={movie.data.title}
+  description={movie.data.description ?? format(t.common.noteFallback.movie, { title: movie.data.title })}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  image={coverImage}
+  type="article"
+  jsonLd={[reviewSchema, breadcrumbs]}
+>
+  <a class="back-link" href={localizePath('/cinema', lang)}>{t.common.back.cinema}</a>
+
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
+    {!coverImage && (
+      <div class="fallback-cover-content detail-fallback-cover-content">
+        <span class="fallback-cover-type">FILM</span>
+        <strong>{movie.data.title}</strong>
+        <em>{[movie.data.year, movie.data.rating && `${movie.data.rating}/10`].filter(Boolean).join(' / ')}</em>
+      </div>
+    )}
+  </div>
+
+  <section class="page-hero detail-hero">
+    <p class="eyebrow">{copy.title}</p>
+    <h1>{movie.data.title}</h1>
+    <div class="detail-meta">
+      <span>{movie.data.year}</span>
+      {movie.data.rating && <span>{movie.data.rating}/10</span>}
+      {movie.data.favorite && <span class="favorite-badge">{t.common.favorite}</span>}
+    </div>
+    {movie.data.genres && (
+      <div class="chip-list">
+        {movie.data.genres.map((genre) => <span class="chip">{genre}</span>)}
+      </div>
+    )}
+    {movie.data.description && <p>{movie.data.description}</p>}
+  </section>
+
+  <article class="prose text-panel glass-card">
+    <Content />
+  </article>
+</BaseLayout>

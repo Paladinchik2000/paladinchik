@@ -1,50 +1,39 @@
 ---
-interface SortOption {
-  value: 'newest' | 'oldest' | 'rating' | 'title';
-  label: string;
-}
+import type { ArchiveFilterLabels } from '../../i18n/ui';
 
 interface Props {
+  /** Id of the grid this control set filters and sorts. */
   targetId: string;
-  genres: string[];
-  searchLabel: string;
-  searchPlaceholder: string;
-  filterLabel: string;
-  allLabel: string;
-  favoriteLabel: string;
-  sortLabel: string;
-  sortOptions: SortOption[];
+  groups: string[];
+  labels: ArchiveFilterLabels;
 }
 
-const {
-  targetId,
-  genres,
-  searchLabel,
-  searchPlaceholder,
-  filterLabel,
-  allLabel,
-  favoriteLabel,
-  sortLabel,
-  sortOptions,
-} = Astro.props;
+const { targetId, groups, labels } = Astro.props;
+
+const sortOptions = [
+  { value: 'newest', label: labels.sortOptions.newest },
+  { value: 'oldest', label: labels.sortOptions.oldest },
+  { value: 'rating', label: labels.sortOptions.rating },
+  { value: 'title', label: labels.sortOptions.title },
+];
 ---
 
 <section class="archive-filters glass-card" data-archive-filter-root data-target={targetId}>
   <label>
-    <span>{searchLabel}</span>
-    <input type="search" placeholder={searchPlaceholder} data-archive-search />
+    <span>{labels.search}</span>
+    <input type="search" placeholder={labels.searchPlaceholder} data-archive-search />
   </label>
 
   <label>
-    <span>{filterLabel}</span>
+    <span>{labels.filter}</span>
     <select data-archive-group>
-      <option value="">{allLabel}</option>
-      {genres.map((genre) => <option value={genre}>{genre}</option>)}
+      <option value="">{labels.all}</option>
+      {groups.map((group) => <option value={group}>{group}</option>)}
     </select>
   </label>
 
   <label>
-    <span>{sortLabel}</span>
+    <span>{labels.sort}</span>
     <select data-archive-sort>
       {sortOptions.map((option) => <option value={option.value}>{option.label}</option>)}
     </select>
@@ -52,26 +41,27 @@ const {
 
   <label class="filter-toggle">
     <input type="checkbox" data-archive-favorite />
-    <span>{favoriteLabel}</span>
+    <span>{labels.favorite}</span>
   </label>
 </section>
 
 <script>
-  const normalizeArchiveValue = (value) => String(value || '').trim().toLocaleLowerCase();
+  const normalizeArchiveValue = (value: string | null | undefined) =>
+    String(value || '').trim().toLocaleLowerCase();
 
-  const initializeArchiveFilters = (root) => {
+  const initializeArchiveFilters = (root: HTMLElement) => {
     const targetId = root.dataset.target;
     const list = targetId ? document.getElementById(targetId) : null;
     if (!list) return;
 
-    const items = Array.from(list.querySelectorAll('[data-archive-item]'));
-    const searchInput = root.querySelector('[data-archive-search]');
-    const groupSelect = root.querySelector('[data-archive-group]');
-    const favoriteInput = root.querySelector('[data-archive-favorite]');
-    const sortSelect = root.querySelector('[data-archive-sort]');
-    const emptyState = document.querySelector(`[data-archive-empty="${targetId}"]`);
+    const items = Array.from(list.querySelectorAll<HTMLElement>('[data-archive-item]'));
+    const searchInput = root.querySelector<HTMLInputElement>('[data-archive-search]');
+    const groupSelect = root.querySelector<HTMLSelectElement>('[data-archive-group]');
+    const favoriteInput = root.querySelector<HTMLInputElement>('[data-archive-favorite]');
+    const sortSelect = root.querySelector<HTMLSelectElement>('[data-archive-sort]');
+    const emptyState = document.querySelector<HTMLElement>(`[data-archive-empty="${targetId}"]`);
 
-    const sortItems = (entries, sortValue) => {
+    const sortItems = (entries: HTMLElement[], sortValue: string) => {
       return [...entries].sort((a, b) => {
         if (sortValue === 'oldest') {
           return Number(a.dataset.year || 0) - Number(b.dataset.year || 0);
@@ -127,5 +117,12 @@ const {
     update();
   };
 
-  document.querySelectorAll('[data-archive-filter-root]').forEach(initializeArchiveFilters);
+  const initializeAllArchiveFilters = () => {
+    document
+      .querySelectorAll<HTMLElement>('[data-archive-filter-root]')
+      .forEach(initializeArchiveFilters);
+  };
+
+  initializeAllArchiveFilters();
+  document.addEventListener('astro:page-load', initializeAllArchiveFilters);
 </script>
