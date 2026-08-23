@@ -1225,13 +1225,15 @@ a.archive-card:hover {
 
 .gallery-grid {
   display: grid;
+  /* Tiles take their photo's own height, so rows align to the top instead of
+     stretching every tile to the tallest one in the row. */
+  align-items: start;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
 .gallery-tile {
   position: relative;
-  min-height: clamp(12rem, 24vw, 18rem);
   overflow: hidden;
   border: 1px solid var(--color-glass-border);
   border-radius: var(--radius-card);
@@ -1583,9 +1585,6 @@ a.archive-card:hover {
     width: min(15rem, 72vw);
   }
 
-  .gallery-tile {
-    min-height: 13rem;
-  }
 }
 
 @media (max-width: 430px) {

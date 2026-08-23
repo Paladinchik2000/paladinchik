@@ -13,14 +13,21 @@ interface Props {
   alt?: string;
   /** Detail-page covers are above the fold and should not be lazy-loaded. */
   eager?: boolean;
+  /**
+   * `fill` crops the image to a fixed slot (archive cards, detail banners).
+   * `natural` keeps the image's own aspect ratio and lets the container follow
+   * it — used for the place gallery, where the photo is the content and
+   * cropping it to a uniform shape throws away most of a portrait shot.
+   */
+  layout?: 'fill' | 'natural';
 }
 
-const { src, preset, alt = '', eager = false } = Astro.props;
+const { src, preset, alt = '', eager = false, layout = 'fill' } = Astro.props;
 const { widths, sizes } = coverPresets[preset];
 ---
 
 <Image
-  class="cover-image"
+  class:list={['cover-image', `cover-image-${layout}`]}
   src={src}
   alt={alt}
   widths={[...widths]}
@@ -30,12 +37,20 @@ const { widths, sizes } = coverPresets[preset];
 />
 
 <style>
-  .cover-image {
+  .cover-image-fill {
     position: absolute;
     inset: 0;
     z-index: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .cover-image-natural {
+    position: relative;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: auto;
   }
 </style>
