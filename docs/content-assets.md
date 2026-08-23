@@ -73,11 +73,11 @@ the 16:10 card slot loses most of its top and bottom.
 ### Place galleries
 
 ```yaml
-cover: "../../assets/images/places/rome/cover.jpg"
+cover: "../../assets/images/places/venice/cover.jpg"
 gallery:
-  - "../../assets/images/places/rome/01.jpg"
-  - "../../assets/images/places/rome/02.jpg"
-  - "../../assets/images/places/rome/03.jpg"
+  - "../../assets/images/places/venice/01.jpg"
+  - "../../assets/images/places/venice/02.jpg"
+  - "../../assets/images/places/venice/03.jpg"
 ```
 
 Gallery images are the content rather than decoration, so they get real alt text
