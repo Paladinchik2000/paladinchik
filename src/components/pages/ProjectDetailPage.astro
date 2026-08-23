@@ -3,8 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import BaseLayout from '../layout/BaseLayout.astro';
 import type { Locale } from '../../i18n/ui';
+import CoverImage from '../ui/CoverImage.astro';
 import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
-import { getExistingPublicImage } from '../../lib/assets';
 import { createBreadcrumbSchema, createCreativeWorkSchema } from '../../lib/structuredData';
 
 interface Props {
@@ -17,8 +17,7 @@ const t = getTranslations(lang);
 const copy = t.projects;
 
 const { Content } = await render(project);
-const coverImage = getExistingPublicImage(project.data.cover);
-const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+const coverImage = project.data.cover;
 const dateRange = [project.data.startDate, project.data.endDate].filter(Boolean).join(' - ');
 const chips = [...(project.data.stack ?? []), ...(project.data.tags ?? [])];
 const highlights = project.data.highlights ?? [];
@@ -33,7 +32,7 @@ const projectSchema = createCreativeWorkSchema({
   title: project.data.title,
   description: project.data.description,
   url: canonicalPath,
-  image: coverImage,
+  image: coverImage?.src,
   datePublished: project.data.startDate,
   dateModified: project.data.endDate,
   lang,
@@ -51,14 +50,18 @@ const projectSchema = createCreativeWorkSchema({
 >
   <a class="back-link" href={localizePath('/projects', lang)}>{t.common.back.projects}</a>
 
-  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
-    {!coverImage && (
-      <div class="fallback-cover-content detail-fallback-cover-content">
-        <span class="fallback-cover-type">PROJECT</span>
-        <strong>{project.data.title}</strong>
-        <em>{[project.data.status, project.data.year].filter(Boolean).join(' / ')}</em>
-      </div>
-    )}
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} aria-hidden="true">
+    {
+      coverImage ? (
+        <CoverImage src={coverImage} preset="detail" eager />
+      ) : (
+        <div class="fallback-cover-content detail-fallback-cover-content">
+          <span class="fallback-cover-type">PROJECT</span>
+          <strong>{project.data.title}</strong>
+          <em>{[project.data.status, project.data.year].filter(Boolean).join(' / ')}</em>
+        </div>
+      )
+    }
   </div>
 
   <section class="page-hero detail-hero">

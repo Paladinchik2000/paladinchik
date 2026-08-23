@@ -3,8 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import BaseLayout from '../layout/BaseLayout.astro';
 import type { Locale } from '../../i18n/ui';
+import CoverImage from '../ui/CoverImage.astro';
 import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
-import { getExistingPublicImage } from '../../lib/assets';
 import { createBookReviewSchema, createBreadcrumbSchema } from '../../lib/structuredData';
 
 interface Props {
@@ -17,8 +17,7 @@ const t = getTranslations(lang);
 const copy = t.library;
 
 const { Content } = await render(book);
-const coverImage = getExistingPublicImage(book.data.cover);
-const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+const coverImage = book.data.cover;
 
 const canonicalPath = localizePath(`/library/${getContentSlug(book)}`, lang);
 const breadcrumbs = createBreadcrumbSchema([
@@ -30,7 +29,7 @@ const reviewSchema = createBookReviewSchema({
   title: book.data.title,
   description: book.data.description,
   url: canonicalPath,
-  image: coverImage,
+  image: coverImage?.src,
   bookAuthor: book.data.author,
   year: book.data.year,
   rating: book.data.rating,
@@ -50,14 +49,18 @@ const reviewSchema = createBookReviewSchema({
 >
   <a class="back-link" href={localizePath('/library', lang)}>{t.common.back.library}</a>
 
-  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
-    {!coverImage && (
-      <div class="fallback-cover-content detail-fallback-cover-content">
-        <span class="fallback-cover-type">BOOK</span>
-        <strong>{book.data.title}</strong>
-        <em>{[book.data.author, book.data.year].filter(Boolean).join(' / ')}</em>
-      </div>
-    )}
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} aria-hidden="true">
+    {
+      coverImage ? (
+        <CoverImage src={coverImage} preset="detail" eager />
+      ) : (
+        <div class="fallback-cover-content detail-fallback-cover-content">
+          <span class="fallback-cover-type">BOOK</span>
+          <strong>{book.data.title}</strong>
+          <em>{[book.data.author, book.data.year].filter(Boolean).join(' / ')}</em>
+        </div>
+      )
+    }
   </div>
 
   <section class="page-hero detail-hero">

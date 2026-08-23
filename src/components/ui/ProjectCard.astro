@@ -1,5 +1,5 @@
 ---
-import { getExistingPublicImage } from '../../lib/assets';
+import CoverImage from './CoverImage.astro';
 
 interface Props {
   title: string;
@@ -9,7 +9,7 @@ interface Props {
   role?: string;
   description?: string;
   chips: string[];
-  cover?: string;
+  cover?: ImageMetadata;
   url?: string;
   github?: string;
   openLabel: string;
@@ -32,24 +32,21 @@ const {
   liveSiteLabel,
   githubLabel,
 } = Astro.props;
-
-const coverImage = getExistingPublicImage(cover);
-const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
 ---
 
 <article class="project-card glass-card">
-  <div
-    class:list={['archive-cover', 'project-cover', { 'has-cover': coverImage }]}
-    style={coverStyle}
-    aria-hidden="true"
-  >
-    {!coverImage && (
-      <div class="fallback-cover-content">
-        <span class="fallback-cover-type">PROJECT</span>
-        <strong>{title}</strong>
-        {chips.length > 0 && <em>{chips.slice(0, 3).join(' / ')}</em>}
-      </div>
-    )}
+  <div class:list={['archive-cover', 'project-cover', { 'has-cover': cover }]} aria-hidden="true">
+    {
+      cover ? (
+        <CoverImage src={cover} preset="project" />
+      ) : (
+        <div class="fallback-cover-content">
+          <span class="fallback-cover-type">PROJECT</span>
+          <strong>{title}</strong>
+          {chips.length > 0 && <em>{chips.slice(0, 3).join(' / ')}</em>}
+        </div>
+      )
+    }
   </div>
   <a class="project-card-main" href={href}>
     <span class="card-eyebrow">{status}</span>

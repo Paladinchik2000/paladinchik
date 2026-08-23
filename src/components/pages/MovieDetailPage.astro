@@ -3,8 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import BaseLayout from '../layout/BaseLayout.astro';
 import type { Locale } from '../../i18n/ui';
+import CoverImage from '../ui/CoverImage.astro';
 import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
-import { getExistingPublicImage } from '../../lib/assets';
 import { createBreadcrumbSchema, createMovieReviewSchema } from '../../lib/structuredData';
 
 interface Props {
@@ -17,8 +17,7 @@ const t = getTranslations(lang);
 const copy = t.cinema;
 
 const { Content } = await render(movie);
-const coverImage = getExistingPublicImage(movie.data.cover);
-const coverStyle = coverImage ? `--cover-image: url("${coverImage}")` : undefined;
+const coverImage = movie.data.cover;
 
 const canonicalPath = localizePath(`/cinema/${getContentSlug(movie)}`, lang);
 const breadcrumbs = createBreadcrumbSchema([
@@ -30,7 +29,7 @@ const reviewSchema = createMovieReviewSchema({
   title: movie.data.title,
   description: movie.data.description,
   url: canonicalPath,
-  image: coverImage,
+  image: coverImage?.src,
   year: movie.data.year,
   rating: movie.data.rating,
   genres: movie.data.genres,
@@ -49,14 +48,18 @@ const reviewSchema = createMovieReviewSchema({
 >
   <a class="back-link" href={localizePath('/cinema', lang)}>{t.common.back.cinema}</a>
 
-  <div class:list={['detail-cover', { 'has-cover': coverImage }]} style={coverStyle} aria-hidden="true">
-    {!coverImage && (
-      <div class="fallback-cover-content detail-fallback-cover-content">
-        <span class="fallback-cover-type">FILM</span>
-        <strong>{movie.data.title}</strong>
-        <em>{[movie.data.year, movie.data.rating && `${movie.data.rating}/10`].filter(Boolean).join(' / ')}</em>
-      </div>
-    )}
+  <div class:list={['detail-cover', { 'has-cover': coverImage }]} aria-hidden="true">
+    {
+      coverImage ? (
+        <CoverImage src={coverImage} preset="detail" eager />
+      ) : (
+        <div class="fallback-cover-content detail-fallback-cover-content">
+          <span class="fallback-cover-type">FILM</span>
+          <strong>{movie.data.title}</strong>
+          <em>{[movie.data.year, movie.data.rating && `${movie.data.rating}/10`].filter(Boolean).join(' / ')}</em>
+        </div>
+      )
+    }
   </div>
 
   <section class="page-hero detail-hero">

@@ -1,12 +1,12 @@
 ---
-import { getExistingPublicImage } from '../../lib/assets';
+import CoverImage from './CoverImage.astro';
 
 interface Props {
   title: string;
   description?: string;
   href: string;
   eyebrow?: string | number;
-  cover?: string;
+  cover?: ImageMetadata;
   coverType?: string;
   fallbackMeta?: Array<string | number | false | undefined>;
   meta?: Array<string | number | false | undefined>;
@@ -42,9 +42,7 @@ const {
 } = Astro.props;
 
 const visibleMeta = meta.filter(Boolean);
-const validCover = getExistingPublicImage(cover);
 const visibleFallbackMeta = fallbackMeta.filter(Boolean).slice(0, 2);
-const coverStyle = validCover ? `--cover-image: url("${validCover}")` : undefined;
 ---
 
 <a
@@ -58,14 +56,18 @@ const coverStyle = validCover ? `--cover-image: url("${validCover}")` : undefine
   data-year={sortYear}
   data-rating={sortRating}
 >
-  <div class:list={['archive-cover', { 'has-cover': validCover }]} style={coverStyle} aria-hidden="true">
-    {!validCover && (
-      <div class="fallback-cover-content">
-        <span class="fallback-cover-type">{coverType}</span>
-        <strong>{title}</strong>
-        {visibleFallbackMeta.length > 0 ? <em>{visibleFallbackMeta.join(' / ')}</em> : <em>{noCoverLabel}</em>}
-      </div>
-    )}
+  <div class:list={['archive-cover', { 'has-cover': cover }]} aria-hidden="true">
+    {
+      cover ? (
+        <CoverImage src={cover} preset="card" />
+      ) : (
+        <div class="fallback-cover-content">
+          <span class="fallback-cover-type">{coverType}</span>
+          <strong>{title}</strong>
+          {visibleFallbackMeta.length > 0 ? <em>{visibleFallbackMeta.join(' / ')}</em> : <em>{noCoverLabel}</em>}
+        </div>
+      )
+    }
   </div>
   <div class="archive-card-body">
     {eyebrow && <span class="card-eyebrow">{eyebrow}</span>}
