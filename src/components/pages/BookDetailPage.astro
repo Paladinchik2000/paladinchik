@@ -17,7 +17,8 @@ const t = getTranslations(lang);
 const copy = t.library;
 
 const { Content } = await render(book);
-const coverImage = book.data.cover;
+const cardCover = book.data.cover;
+const coverImage = book.data.heroCover ?? cardCover;
 
 const canonicalPath = localizePath(`/library/${getContentSlug(book)}`, lang);
 const breadcrumbs = createBreadcrumbSchema([
@@ -29,7 +30,7 @@ const reviewSchema = createBookReviewSchema({
   title: book.data.title,
   description: book.data.description,
   url: canonicalPath,
-  image: coverImage?.src,
+  image: (cardCover ?? coverImage)?.src,
   bookAuthor: book.data.author,
   year: book.data.year,
   rating: book.data.rating,
@@ -43,7 +44,7 @@ const reviewSchema = createBookReviewSchema({
   description={book.data.description ?? format(t.common.noteFallback.book, { title: book.data.title })}
   lang={lang}
   canonicalPath={canonicalPath}
-  image={coverImage}
+  image={cardCover ?? coverImage}
   type="article"
   jsonLd={[reviewSchema, breadcrumbs]}
 >

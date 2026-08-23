@@ -17,7 +17,8 @@ const t = getTranslations(lang);
 const copy = t.cinema;
 
 const { Content } = await render(movie);
-const coverImage = movie.data.cover;
+const cardCover = movie.data.cover;
+const coverImage = movie.data.heroCover ?? cardCover;
 
 const canonicalPath = localizePath(`/cinema/${getContentSlug(movie)}`, lang);
 const breadcrumbs = createBreadcrumbSchema([
@@ -29,7 +30,7 @@ const reviewSchema = createMovieReviewSchema({
   title: movie.data.title,
   description: movie.data.description,
   url: canonicalPath,
-  image: coverImage?.src,
+  image: (cardCover ?? coverImage)?.src,
   year: movie.data.year,
   rating: movie.data.rating,
   genres: movie.data.genres,
@@ -42,7 +43,7 @@ const reviewSchema = createMovieReviewSchema({
   description={movie.data.description ?? format(t.common.noteFallback.movie, { title: movie.data.title })}
   lang={lang}
   canonicalPath={canonicalPath}
-  image={coverImage}
+  image={cardCover ?? coverImage}
   type="article"
   jsonLd={[reviewSchema, breadcrumbs]}
 >

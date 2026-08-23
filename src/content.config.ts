@@ -11,6 +11,11 @@ import { z } from 'zod';
  * `../../assets/images/movies/{slug}/cover.jpg`. A path that does not resolve
  * fails the build rather than silently falling back — omit the field entirely
  * when there is no artwork yet.
+ *
+ * `cover` fills the archive card (16/10) and the social preview; `heroCover`
+ * is the wider banner on the detail page (16/7) and falls back to `cover`
+ * when not supplied. Supplying both avoids cropping one image into two very
+ * different shapes.
  */
 const movies = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/movies' }),
@@ -23,6 +28,7 @@ const movies = defineCollection({
       rating: z.number().min(0).max(10).optional(),
       genres: z.array(z.string()).optional(),
       cover: image().optional(),
+      heroCover: image().optional(),
       favorite: z.boolean().optional().default(false),
       dateWatched: z.string().optional(),
       description: z.string().optional(),
@@ -41,6 +47,7 @@ const books = defineCollection({
       rating: z.number().min(0).max(10).optional(),
       genres: z.array(z.string()).optional(),
       cover: image().optional(),
+      heroCover: image().optional(),
       favorite: z.boolean().optional().default(false),
       dateRead: z.string().optional(),
       description: z.string().optional(),
@@ -59,6 +66,7 @@ const places = defineCollection({
       coordinates: z.tuple([z.number(), z.number()]).optional(),
       visitedAt: z.string().optional(),
       cover: image().optional(),
+      heroCover: image().optional(),
       gallery: z.array(image()).optional(),
       mapZoom: z.number().optional(),
       featured: z.boolean().optional().default(false),
@@ -77,6 +85,7 @@ const projects = defineCollection({
       year: z.number().optional(),
       status: z.enum(['idea', 'in-progress', 'live', 'paused', 'archived']).optional(),
       cover: image().optional(),
+      heroCover: image().optional(),
       tags: z.array(z.string()).optional(),
       url: z.string().optional(),
       github: z.string().optional(),

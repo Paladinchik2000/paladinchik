@@ -17,7 +17,8 @@ const t = getTranslations(lang);
 const copy = t.projects;
 
 const { Content } = await render(project);
-const coverImage = project.data.cover;
+const cardCover = project.data.cover;
+const coverImage = project.data.heroCover ?? cardCover;
 const dateRange = [project.data.startDate, project.data.endDate].filter(Boolean).join(' - ');
 const chips = [...(project.data.stack ?? []), ...(project.data.tags ?? [])];
 const highlights = project.data.highlights ?? [];
@@ -32,7 +33,7 @@ const projectSchema = createCreativeWorkSchema({
   title: project.data.title,
   description: project.data.description,
   url: canonicalPath,
-  image: coverImage?.src,
+  image: (cardCover ?? coverImage)?.src,
   datePublished: project.data.startDate,
   dateModified: project.data.endDate,
   lang,
@@ -44,7 +45,7 @@ const projectSchema = createCreativeWorkSchema({
   description={project.data.description ?? format(t.common.noteFallback.project, { title: project.data.title })}
   lang={lang}
   canonicalPath={canonicalPath}
-  image={coverImage}
+  image={cardCover ?? coverImage}
   type="article"
   jsonLd={[projectSchema, breadcrumbs]}
 >

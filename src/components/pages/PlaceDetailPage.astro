@@ -17,7 +17,8 @@ const t = getTranslations(lang);
 const copy = t.places;
 
 const { Content } = await render(place);
-const coverImage = place.data.cover;
+const cardCover = place.data.cover;
+const coverImage = place.data.heroCover ?? cardCover;
 const gallery = place.data.gallery ?? [];
 
 const canonicalPath = localizePath(`/places/${getContentSlug(place)}`, lang);
@@ -30,7 +31,7 @@ const placeSchema = createCreativeWorkSchema({
   title: place.data.title,
   description: place.data.description,
   url: canonicalPath,
-  image: coverImage?.src,
+  image: (cardCover ?? coverImage)?.src,
   datePublished: place.data.visitedAt,
   lang,
 });
@@ -41,7 +42,7 @@ const placeSchema = createCreativeWorkSchema({
   description={place.data.description ?? format(t.common.noteFallback.place, { title: place.data.title })}
   lang={lang}
   canonicalPath={canonicalPath}
-  image={coverImage}
+  image={cardCover ?? coverImage}
   type="article"
   jsonLd={[placeSchema, breadcrumbs]}
 >

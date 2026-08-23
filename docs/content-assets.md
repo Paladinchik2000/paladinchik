@@ -30,18 +30,45 @@ Omit the `cover` field entirely when there is no artwork yet — the designed
 prismatic fallback cover renders instead. Do not point it at a file that does
 not exist; that now fails the build.
 
+## Two slots: `cover` and `heroCover`
+
+The archive card and the detail page are different shapes, so an entry can
+carry two images:
+
+| Field       | Where it shows                   | Aspect |
+| ----------- | -------------------------------- | ------ |
+| `cover`     | Archive card, plus social preview | 16:10  |
+| `heroCover` | Detail page banner                | 16:7   |
+
+`heroCover` is optional and falls back to `cover`. Supply both when you have
+them — cropping one image into both shapes usually means losing the subject in
+one of them.
+
+```yaml
+cover: "../../assets/images/movies/blade-runner-2049/cover.jpg"
+heroCover: "../../assets/images/movies/blade-runner-2049/hero.jpg"
+```
+
+The social preview always uses `cover`, since that is the image carrying the
+entry's identity.
+
 ## Folders and sizes
 
-| Collection | Path                                        | Recommended size    |
-| ---------- | ------------------------------------------- | ------------------- |
-| Movies     | `src/assets/images/movies/{slug}/cover.jpg`  | 1000x1500 (2:3)     |
-| Books      | `src/assets/images/books/{slug}/cover.jpg`   | 1000x1500 (2:3)     |
-| Places     | `src/assets/images/places/{slug}/cover.jpg`  | 1600x1000 (16:10)   |
-| Places     | `src/assets/images/places/{slug}/01.jpg` ... | 1600px wide         |
-| Projects   | `src/assets/images/projects/{slug}/cover.jpg`| 1600x900 (16:9)     |
+Every collection uses the same two filenames, so the shape is consistent:
 
-Supply the largest size you have; downscaled variants are generated for you.
-Covers are cropped with `object-fit: cover`, so keep the subject near the centre.
+| File                                            | Slot        | Aspect | Good source size |
+| ----------------------------------------------- | ----------- | ------ | ---------------- |
+| `src/assets/images/{collection}/{slug}/cover.jpg`| Card + social | 16:10 | ~1920x1200       |
+| `src/assets/images/{collection}/{slug}/hero.jpg` | Detail banner | 16:7  | ~2560x1120       |
+| `src/assets/images/places/{slug}/01.jpg` ...     | Gallery tile  | any   | ~1600px wide     |
+
+Sources beyond roughly 2x the largest rendered variant are wasted bytes in the
+repo — 1920px for a card and 2560px for a hero is plenty. Downscaled variants
+are generated for you.
+
+Covers are cropped with `object-fit: cover`, so match the aspect reasonably
+closely and keep the subject near the centre. A portrait poster dropped into
+the 16:10 card slot loses most of its top and bottom.
 
 ### Place galleries
 
