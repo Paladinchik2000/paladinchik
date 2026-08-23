@@ -48,6 +48,14 @@ const personReference = () => ({
   url: siteConfig.siteUrl,
 });
 
+/**
+ * schema.org date properties require ISO 8601. Display fields like `visitedAt`
+ * are free text so they can read "Winter 2025-2026", so anything that is not a
+ * clean YYYY[-MM[-DD]] value is dropped rather than emitted as an invalid date.
+ */
+const isoDate = (value?: string) =>
+  value && /^\d{4}(-\d{2}(-\d{2})?)?$/.test(value) ? value : undefined;
+
 const ratingSchema = (rating?: number) =>
   typeof rating === 'number'
     ? {
@@ -130,8 +138,8 @@ export const createCreativeWorkSchema = ({
   description,
   url: absoluteUrl(url),
   image: image ? absoluteUrl(image) : undefined,
-  datePublished,
-  dateModified,
+  datePublished: isoDate(datePublished),
+  dateModified: isoDate(dateModified),
   inLanguage: lang,
   author: {
     '@type': 'Person',
