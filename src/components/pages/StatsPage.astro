@@ -1,0 +1,300 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import type { Locale } from '../../i18n/ui';
+import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { genreSlugs, getGenreLabel } from '../../lib/genres';
+import { createBreadcrumbSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.stats;
+
+const forLang = <T extends { data: { lang: Locale } }>(entries: T[]) =>
+  entries.filter((entry) => entry.data.lang === lang);
+
+const movies = forLang(await getCollection('movies'));
+const books = forLang(await getCollection('books'));
+const places = forLang(await getCollection('places'));
+const projects = forLang(await getCollection('projects'));
+
+const overview = [
+  { label: t.pages.cinema, value: movies.length, href: localizePath('/cinema', lang) },
+  { label: t.pages.library, value: books.length, href: localizePath('/library', lang) },
+  { label: t.pages.places, value: places.length, href: localizePath('/places', lang) },
+  { label: t.pages.projects, value: projects.length, href: localizePath('/projects', lang) },
+];
+
+/** Groups values into `{ key, count }`, sorted by count then key. */
+const tally = <T,>(items: T[], key: (item: T) => string | undefined) => {
+  const counts = new Map<string, number>();
+  for (const item of items) {
+    const value = key(item);
+    if (value) counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+};
+
+const decades = tally(movies, (movie) =>
+  format(copy.decadeLabel, { decade: Math.floor(movie.data.year / 10) * 10 }),
+).sort((a, b) => a.label.localeCompare(b.label));
+
+const ratings = tally(movies, (movie) =>
+  movie.data.rating ? String(movie.data.rating) : undefined,
+).sort((a, b) => Number(b.label) - Number(a.label));
+
+const genres = genreSlugs
+  .map((slug) => {
+    const label = getGenreLabel(slug, lang);
+    return {
+      slug,
+      label,
+      count: movies.filter((movie) => (movie.data.genres ?? []).includes(label)).length,
+    };
+  })
+  .filter((genre) => genre.count > 0)
+  .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+  .slice(0, 8);
+
+const countries = tally(places, (place) => place.data.country);
+
+const topRated = movies
+  .filter((movie) => movie.data.rating === 10)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const max = (rows: { count: number }[]) => Math.max(...rows.map((row) => row.count), 1);
+const decadeMax = max(decades);
+const ratingMax = max(ratings);
+
+const canonicalPath = localizePath('/stats', lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: t.pages.stats, url: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={t.pages.stats}
+  description={copy.metaDescription}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={breadcrumbs}
+>
+  <section class="page-hero">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1>{t.pages.stats}</h1>
+    <p>{copy.intro}</p>
+  </section>
+
+  <section class="page-section" aria-label={copy.ariaLabel}>
+    <div class="stat-tiles">
+      {
+        overview.map((item) => (
+          <a class="stat-tile glass-card" href={item.href}>
+            <strong>{item.value}</strong>
+            <span>{item.label}</span>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="stat-grid">
+      <article class="text-panel glass-card">
+        <h2>{copy.decadesTitle}</h2>
+        <dl class="stat-bars">
+          {
+            decades.map((row) => (
+              <div class="stat-bar-row">
+                <dt>{row.label}</dt>
+                <dd class="stat-bar">
+                  <span style={`--fill: ${(row.count / decadeMax) * 100}%`} />
+                </dd>
+                <dd class="stat-bar-count">{row.count}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </article>
+
+      <article class="text-panel glass-card">
+        <h2>{copy.ratingsTitle}</h2>
+        <dl class="stat-bars">
+          {
+            ratings.map((row) => (
+              <div class="stat-bar-row">
+                <dt>{row.label}/10</dt>
+                <dd class="stat-bar">
+                  <span style={`--fill: ${(row.count / ratingMax) * 100}%`} />
+                </dd>
+                <dd class="stat-bar-count">{row.count}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </article>
+
+      <article class="text-panel glass-card">
+        <h2>{copy.genresTitle}</h2>
+        <div class="chip-list">
+          {
+            genres.map((genre) => (
+              <a class="chip chip-link" href={localizePath(`/cinema/genre/${genre.slug}`, lang)}>
+                {genre.label} <span>{genre.count}</span>
+              </a>
+            ))
+          }
+        </div>
+      </article>
+
+      <article class="text-panel glass-card">
+        <h2>{copy.countriesTitle}</h2>
+        <ul class="clean-list stat-list">
+          {
+            countries.map((country) => (
+              <li>
+                <span>{country.label}</span>
+                <span class="stat-bar-count">{country.count}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+
+      {
+        topRated.length > 0 && (
+          <article class="text-panel glass-card stat-panel-wide">
+            <h2>{copy.highestRatedTitle}</h2>
+            <div class="chip-list">
+              {topRated.map((movie) => (
+                <a
+                  class="chip chip-link"
+                  href={localizePath(`/cinema/${getContentSlug(movie)}`, lang)}
+                >
+                  {movie.data.title}
+                </a>
+              ))}
+            </div>
+          </article>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .stat-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-tile {
+    display: grid;
+    gap: 0.2rem;
+    padding: 1.1rem;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      transform 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .stat-tile:hover,
+  .stat-tile:focus-visible {
+    border-color: rgba(125, 223, 255, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .stat-tile strong {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .stat-tile span {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.66;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-panel-wide {
+    grid-column: 1 / -1;
+  }
+
+  .stat-bars {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .stat-bar-row {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 4.2rem 1fr 2.2rem;
+    gap: 0.7rem;
+  }
+
+  .stat-bar-row dt {
+    font-size: 0.84rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.78;
+  }
+
+  .stat-bar {
+    height: 0.5rem;
+    overflow: hidden;
+    margin: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .stat-bar span {
+    display: block;
+    width: var(--fill);
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(125, 223, 255, 0.85), rgba(189, 167, 255, 0.85));
+  }
+
+  .stat-bar-count {
+    margin: 0;
+    font-size: 0.84rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    opacity: 0.66;
+  }
+
+  .stat-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  @media (max-width: 860px) {
+    .stat-tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

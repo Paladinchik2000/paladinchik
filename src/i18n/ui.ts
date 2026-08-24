@@ -45,8 +45,11 @@ export interface CollectionCopy {
  * to English (or to a raw key) in production.
  */
 export interface Translations {
-  nav: Record<'home' | 'about' | 'cinema' | 'library' | 'places' | 'projects' | 'cv' | 'now', string>;
-  pages: Record<SectionKey | 'now', string>;
+  nav: Record<
+    'home' | 'about' | 'cinema' | 'library' | 'places' | 'projects' | 'cv' | 'now' | 'stats',
+    string
+  >;
+  pages: Record<SectionKey | 'now' | 'stats', string>;
   common: {
     siteName: string;
     personalArchive: string;
@@ -117,6 +120,22 @@ export interface Translations {
     /** `{email}` is replaced with a mailto link. */
     contactBody: string;
   };
+  stats: {
+    metaDescription: string;
+    eyebrow: string;
+    intro: string;
+    ariaLabel: string;
+    overviewTitle: string;
+    decadesTitle: string;
+    ratingsTitle: string;
+    genresTitle: string;
+    countriesTitle: string;
+    highestRatedTitle: string;
+    entries: string;
+    films: string;
+    /** `{decade}` is replaced with the starting year, e.g. 1990. */
+    decadeLabel: string;
+  };
   cinema: CollectionCopy & {
     filters: ArchiveFilterLabels;
     genresHeading: string;
@@ -157,6 +176,7 @@ const en: Translations = {
     projects: 'Projects',
     cv: 'CV',
     now: 'Now',
+    stats: 'Stats',
   },
   pages: {
     about: 'About',
@@ -166,6 +186,7 @@ const en: Translations = {
     projects: 'Projects',
     cv: 'CV',
     now: 'Now',
+    stats: 'Stats',
   },
   common: {
     siteName: 'Nikita Paladi',
@@ -279,6 +300,22 @@ const en: Translations = {
     contactTitle: 'Contact',
     contactBody: 'For contact, write to {email}.',
   },
+  stats: {
+    metaDescription:
+      'How the archive breaks down: films by decade, rating spread, common genres, and places by country.',
+    eyebrow: 'Overview',
+    intro: 'What the archive currently holds, counted.',
+    ariaLabel: 'Archive statistics',
+    overviewTitle: 'At a glance',
+    decadesTitle: 'Films by decade',
+    ratingsTitle: 'Rating spread',
+    genresTitle: 'Most common genres',
+    countriesTitle: 'Places by country',
+    highestRatedTitle: 'Rated 10',
+    entries: 'entries',
+    films: 'films',
+    decadeLabel: '{decade}s',
+  },
   cinema: {
     eyebrow: 'Reviews',
     title: 'Cinema',
@@ -364,6 +401,7 @@ const ru: Translations = {
     projects: 'Проекты',
     cv: 'CV',
     now: 'Сейчас',
+    stats: 'Статистика',
   },
   pages: {
     about: 'Обо мне',
@@ -373,6 +411,7 @@ const ru: Translations = {
     projects: 'Проекты',
     cv: 'CV',
     now: 'Сейчас',
+    stats: 'Статистика',
   },
   common: {
     siteName: 'Nikita Paladi',
@@ -488,6 +527,22 @@ const ru: Translations = {
     ],
     contactTitle: 'Контакты',
     contactBody: 'Для связи: {email}.',
+  },
+  stats: {
+    metaDescription:
+      'Из чего состоит архив: фильмы по десятилетиям, разброс оценок, частые жанры и места по странам.',
+    eyebrow: 'Обзор',
+    intro: 'Что сейчас собрано в архиве, в цифрах.',
+    ariaLabel: 'Статистика архива',
+    overviewTitle: 'Коротко',
+    decadesTitle: 'Фильмы по десятилетиям',
+    ratingsTitle: 'Разброс оценок',
+    genresTitle: 'Частые жанры',
+    countriesTitle: 'Места по странам',
+    highestRatedTitle: 'Оценка 10',
+    entries: 'записей',
+    films: 'фильмов',
+    decadeLabel: '{decade}-е',
   },
   cinema: {
     eyebrow: 'Отзывы',
