@@ -63,6 +63,7 @@ const breadcrumbs = createBreadcrumbSchema([
           href={localizePath(`/cinema/${getContentSlug(movie)}`, lang)}
           eyebrow={movie.data.year}
           cover={movie.data.cover}
+          coverShape="poster"
           coverType="FILM"
           fallbackMeta={[movie.data.year, movie.data.rating && `${movie.data.rating}/10`]}
           meta={[movie.data.rating && `${movie.data.rating}/10`, movie.data.favorite && t.common.favorite]}

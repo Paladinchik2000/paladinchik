@@ -17,8 +17,14 @@ const t = getTranslations(lang);
 const copy = t.cinema;
 
 const { Content } = await render(movie);
+// Entries added from the film list have no note yet; skip the prose panel
+// rather than rendering an empty card on every one of them.
+const hasNote = (movie.body ?? '').trim().length > 0;
 const cardCover = movie.data.cover;
 const coverImage = movie.data.heroCover ?? cardCover;
+// Entries whose only artwork is a portrait poster get a poster-sized banner;
+// cropping one into the 16/7 hero would throw away ~71% of its height.
+const coverIsPortrait = coverImage ? coverImage.height > coverImage.width : false;
 
 const canonicalPath = localizePath(`/cinema/${getContentSlug(movie)}`, lang);
 const breadcrumbs = createBreadcrumbSchema([
@@ -49,10 +55,13 @@ const reviewSchema = createMovieReviewSchema({
 >
   <a class="back-link" href={localizePath('/cinema', lang)}>{t.common.back.cinema}</a>
 
-  <div class:list={['detail-cover', { 'has-cover': coverImage }]} aria-hidden="true">
+  <div
+    class:list={['detail-cover', { 'has-cover': coverImage, 'detail-cover-poster': coverIsPortrait }]}
+    aria-hidden="true"
+  >
     {
       coverImage ? (
-        <CoverImage src={coverImage} preset="detail" eager />
+        <CoverImage src={coverImage} preset={coverIsPortrait ? 'poster' : 'detail'} eager />
       ) : (
         <div class="fallback-cover-content detail-fallback-cover-content">
           <span class="fallback-cover-type">FILM</span>
@@ -79,7 +88,11 @@ const reviewSchema = createMovieReviewSchema({
     {movie.data.description && <p>{movie.data.description}</p>}
   </section>
 
-  <article class="prose text-panel glass-card">
-    <Content />
-  </article>
+  {
+    hasNote && (
+      <article class="prose text-panel glass-card">
+        <Content />
+      </article>
+    )
+  }
 </BaseLayout>

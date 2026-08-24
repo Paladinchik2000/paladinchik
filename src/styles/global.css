@@ -755,6 +755,12 @@ p {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Film and TV artwork is portrait, so Cinema cards use a poster-shaped slot
+   instead of cropping 58% of every poster's height into the 16/10 default. */
+.archive-cover-poster {
+  aspect-ratio: 2 / 3;
+}
+
 .project-cover {
   aspect-ratio: 16 / 9;
 }
@@ -862,6 +868,14 @@ a.archive-card:hover {
   border: 1px solid var(--color-glass-border);
   border-radius: var(--radius-card);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.26);
+}
+
+/* Poster-only entries show the artwork at poster size instead of stretching a
+   portrait image across the full-width 16/7 banner. Must follow .detail-cover
+   so it wins at equal specificity. */
+.detail-cover.detail-cover-poster {
+  width: min(100%, 340px);
+  aspect-ratio: 2 / 3;
 }
 
 .back-link {
@@ -1545,9 +1559,18 @@ a.archive-card:hover {
     aspect-ratio: 16 / 9;
   }
 
+  /* Poster slots keep their shape at every width. */
+  .archive-cover.archive-cover-poster {
+    aspect-ratio: 2 / 3;
+  }
+
   .detail-cover {
     aspect-ratio: 4 / 3;
     box-shadow: 0 14px 44px rgba(0, 0, 0, 0.22);
+  }
+
+  .detail-cover.detail-cover-poster {
+    aspect-ratio: 2 / 3;
   }
 
   .project-card-links {

@@ -14,6 +14,15 @@ export const coverPresets = {
     widths: [320, 480, 640, 768, 960],
     sizes: '(max-width: 620px) 100vw, (max-width: 860px) 50vw, 373px',
   },
+  /**
+   * Cinema cards, which use a 2:3 poster slot. The width ladder stops at 480
+   * because the source posters top out around 550px — asking for more would
+   * only upscale.
+   */
+  poster: {
+    widths: [240, 320, 400, 480],
+    sizes: '(max-width: 620px) 100vw, (max-width: 860px) 50vw, 373px',
+  },
   /** Cards in the 2-column project grid. */
   project: {
     widths: [480, 640, 768, 1140],

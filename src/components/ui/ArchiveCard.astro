@@ -1,5 +1,6 @@
 ---
 import CoverImage from './CoverImage.astro';
+import type { CoverPreset } from '../../lib/images';
 
 interface Props {
   title: string;
@@ -7,6 +8,8 @@ interface Props {
   href: string;
   eyebrow?: string | number;
   cover?: ImageMetadata;
+  /** `poster` switches the cover slot to 2:3 for film and TV artwork. */
+  coverShape?: 'landscape' | 'poster';
   coverType?: string;
   fallbackMeta?: Array<string | number | false | undefined>;
   meta?: Array<string | number | false | undefined>;
@@ -27,6 +30,7 @@ const {
   href,
   eyebrow,
   cover,
+  coverShape = 'landscape',
   coverType = 'ARCHIVE',
   fallbackMeta = [],
   meta = [],
@@ -43,6 +47,13 @@ const {
 
 const visibleMeta = meta.filter(Boolean);
 const visibleFallbackMeta = fallbackMeta.filter(Boolean).slice(0, 2);
+
+// The poster slot is only right for portrait artwork. Landscape art keeps the
+// 16/10 slot rather than losing ~59% of its width to a 2:3 crop, so a section
+// can mix the two without either shape being destroyed.
+const isPortraitCover = cover ? cover.height > cover.width : false;
+const resolvedShape = coverShape === 'poster' && !isPortraitCover ? 'landscape' : coverShape;
+const coverPreset: CoverPreset = resolvedShape === 'poster' ? 'poster' : 'card';
 ---
 
 <a
@@ -56,10 +67,13 @@ const visibleFallbackMeta = fallbackMeta.filter(Boolean).slice(0, 2);
   data-year={sortYear}
   data-rating={sortRating}
 >
-  <div class:list={['archive-cover', { 'has-cover': cover }]} aria-hidden="true">
+  <div
+    class:list={['archive-cover', `archive-cover-${resolvedShape}`, { 'has-cover': cover }]}
+    aria-hidden="true"
+  >
     {
       cover ? (
-        <CoverImage src={cover} preset="card" />
+        <CoverImage src={cover} preset={coverPreset} />
       ) : (
         <div class="fallback-cover-content">
           <span class="fallback-cover-type">{coverType}</span>
