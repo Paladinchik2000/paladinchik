@@ -114,18 +114,39 @@ const openLabel = copy.openPlace;
       L.marker([lat, lng], { icon: markerIcon }).addTo(map).bindPopup(popup);
     });
 
-    if (bounds.length > 1) {
-      map.fitBounds(bounds, { padding: [42, 42], maxZoom: 8 });
+    if (bounds.length === 0) {
+      container.innerHTML = `<div class="places-map-empty">${escapeHtml(emptyText)}</div>`;
       return;
     }
 
-    if (bounds.length === 1) {
-      const zoom = Number.isFinite(Number(places[0].mapZoom)) ? Number(places[0].mapZoom) : 10;
-      map.setView(bounds[0], zoom);
-      return;
-    }
+    const applyView = () => {
+      if (bounds.length > 1) {
+        map.fitBounds(bounds, { padding: [42, 42], maxZoom: 8 });
+      } else {
+        const zoom = Number.isFinite(Number(places[0].mapZoom)) ? Number(places[0].mapZoom) : 10;
+        map.setView(bounds[0], zoom);
+      }
+    };
 
-    container.innerHTML = `<div class="places-map-empty">${escapeHtml(emptyText)}</div>`;
+    // Leaflet measures the container when the map is created. If that happens
+    // before layout has settled, the fit is computed against the wrong width
+    // and distant markers end up outside the viewport, so re-measure before
+    // fitting. Later resizes only re-measure — refitting then would throw away
+    // whatever the visitor had panned to.
+    let fitted = false;
+    const remeasure = () => {
+      map.invalidateSize();
+      if (!fitted) {
+        applyView();
+        fitted = true;
+      }
+    };
+
+    map.whenReady(() => requestAnimationFrame(remeasure));
+
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(remeasure).observe(container);
+    }
   };
 
   document.querySelectorAll<HTMLElement>('[data-places-map]').forEach((container) => {

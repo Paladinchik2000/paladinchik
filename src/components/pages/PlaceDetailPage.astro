@@ -17,6 +17,9 @@ const t = getTranslations(lang);
 const copy = t.places;
 
 const { Content } = await render(place);
+// Places added without a written note skip the prose panel rather than
+// rendering an empty card, matching the film entries.
+const hasNote = (place.body ?? '').trim().length > 0;
 const cardCover = place.data.cover;
 const coverImage = place.data.heroCover ?? cardCover;
 const gallery = place.data.gallery ?? [];
@@ -78,9 +81,13 @@ const placeSchema = createCreativeWorkSchema({
     {place.data.description && <p>{place.data.description}</p>}
   </section>
 
-  <article class="prose text-panel glass-card">
-    <Content />
-  </article>
+  {
+    hasNote && (
+      <article class="prose text-panel glass-card">
+        <Content />
+      </article>
+    )
+  }
 
   <section class="page-section" aria-labelledby="place-gallery">
     <div class="section-heading">
