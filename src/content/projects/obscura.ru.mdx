@@ -1,0 +1,37 @@
+---
+title: "Obscura Password Manager"
+lang: "ru"
+translationKey: "obscura"
+year: 2026
+status: "in-progress"
+featured: true
+github: "https://github.com/Paladinchik2000/Obscura-Vault"
+cover: "../../assets/images/projects/obscura/cover.jpg"
+role: "Дизайн и разработка"
+stack:
+  - "Kotlin"
+  - "Jetpack Compose"
+  - "Room"
+  - "SQLCipher"
+  - "AndroidX Credentials"
+tags:
+  - "Android"
+  - "Безопасность"
+  - "Офлайн"
+startDate: "2026"
+highlights:
+  - "Хранилище в базе Room поверх SQLCipher вместо обычного SQLite"
+  - "Разблокировка по биометрии и Credential Manager для passkeys"
+  - "Автозаполнение и скриншот-тесты Roborazzi заложены в основу"
+description: "Офлайн-менеджер паролей для Android на Kotlin и Jetpack Compose: хранилище остается зашифрованным на устройстве, а не в облачном аккаунте."
+---
+
+## Заметка о проекте
+
+Obscura — нативный менеджер паролей для Android, построенный вокруг одного решения: хранилище остается на устройстве. Нет аккаунта и нет сервера с данными, поэтому задача — защитить локальную базу, а не оборонять сервис синхронизации.
+
+Отсюда и стек. Записи лежат в Room, но поверх SQLCipher, а не обычного SQLite, так что файл базы зашифрован на диске, а не просто закрыт песочницей приложения. Разблокировка идет через AndroidX Biometric, для passkeys подключен Credential Manager. Автозаполнение подключено, чтобы использовать записи в других приложениях, не прогоняя пароли через буфер обмена.
+
+Интерфейс — Jetpack Compose с Material 3 и Navigation Compose, начиная с Android 7. Roborazzi и Robolectric настроены сразу, чтобы проверять экраны скриншот-тестами по мере разработки.
+
+Пока ранняя стадия: в репозитории лежит базовая сборка под Android, и сейчас работа идет над самим хранилищем, редактором записей и экраном разблокировки.

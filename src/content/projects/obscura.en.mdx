@@ -1,0 +1,37 @@
+---
+title: "Obscura Password Manager"
+lang: "en"
+translationKey: "obscura"
+year: 2026
+status: "in-progress"
+featured: true
+github: "https://github.com/Paladinchik2000/Obscura-Vault"
+cover: "../../assets/images/projects/obscura/cover.jpg"
+role: "Design & development"
+stack:
+  - "Kotlin"
+  - "Jetpack Compose"
+  - "Room"
+  - "SQLCipher"
+  - "AndroidX Credentials"
+tags:
+  - "Android"
+  - "Security"
+  - "Offline-first"
+startDate: "2026"
+highlights:
+  - "Vault stored in a SQLCipher-encrypted Room database instead of plain SQLite"
+  - "Biometric unlock and Credential Manager wired in for passkey support"
+  - "Autofill and Roborazzi screenshot tests set up in the base"
+description: "An offline-first Android password manager in Kotlin and Jetpack Compose, keeping the vault encrypted on the device rather than in a cloud account."
+---
+
+## Project Note
+
+Obscura is a native Android password manager built around one decision: the vault stays on the device. There is no account to sign into and no server holding the data, so the threat model is about protecting a local database rather than defending a sync service.
+
+That shapes the stack. Records live in Room, but on top of SQLCipher rather than plain SQLite, so the database file is encrypted at rest instead of merely being private to the app sandbox. Unlocking runs through AndroidX Biometric, and Credential Manager is in place for passkeys. Autofill is wired up so entries can be used in other apps without copying anything through the clipboard.
+
+The interface is Jetpack Compose with Material 3 and Navigation Compose, targeting Android 7 and up. Roborazzi and Robolectric are configured from the start, so screens can be checked with screenshot tests as they get built.
+
+Currently early: the repository holds the Android base, and the work now is turning that foundation into the vault, entry editor, and unlock flow.
