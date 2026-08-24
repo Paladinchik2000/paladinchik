@@ -70,7 +70,12 @@ const breadcrumbs = createBreadcrumbSchema([
           chips={movie.data.genres}
           actionLabel={t.common.readNote}
           noCoverLabel={t.common.noCover}
-          filterText={[movie.data.title, movie.data.description, ...(movie.data.genres ?? [])]
+          filterText={[
+            movie.data.title,
+            movie.data.year,
+            movie.data.description,
+            ...(movie.data.genres ?? []),
+          ]
             .filter(Boolean)
             .join(' ')}
           filterGroups={movie.data.genres}

@@ -69,7 +69,13 @@ const breadcrumbs = createBreadcrumbSchema([
           chips={book.data.genres}
           actionLabel={t.common.readNote}
           noCoverLabel={t.common.noCover}
-          filterText={[book.data.title, book.data.author, book.data.description, ...(book.data.genres ?? [])]
+          filterText={[
+            book.data.title,
+            book.data.author,
+            book.data.year,
+            book.data.description,
+            ...(book.data.genres ?? []),
+          ]
             .filter(Boolean)
             .join(' ')}
           filterGroups={book.data.genres}
