@@ -149,7 +149,17 @@ const openLabel = copy.openPlace;
     }
   };
 
-  document.querySelectorAll<HTMLElement>('[data-places-map]').forEach((container) => {
-    initializePlacesMap(container);
-  });
+  const initializeAllMaps = () => {
+    document.querySelectorAll<HTMLElement>('[data-places-map]').forEach((container) => {
+      // The module body runs once, so client-side navigation relies on the
+      // astro:page-load listener below. Guard against initialising a container
+      // Leaflet has already claimed.
+      if (container.dataset.mapReady === 'true') return;
+      container.dataset.mapReady = 'true';
+      initializePlacesMap(container);
+    });
+  };
+
+  initializeAllMaps();
+  document.addEventListener('astro:page-load', initializeAllMaps);
 </script>

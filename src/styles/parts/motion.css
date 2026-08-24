@@ -1,0 +1,72 @@
+/* Keyframes and the reduced-motion opt-out. */
+
+@keyframes heroAura {
+  0% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.82;
+  }
+
+  100% {
+    transform: translateX(-50%) scale(1.07);
+    opacity: 0.96;
+  }
+}
+
+@keyframes brandHeartbeat {
+  0% {
+    transform: scale(1);
+  }
+
+  10% {
+    transform: scale(1.06);
+  }
+
+  18% {
+    transform: scale(1.02);
+  }
+
+  28% {
+    transform: scale(1.08);
+  }
+
+  40%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes brandGlowPulse {
+  0%,
+  40%,
+  100% {
+    filter:
+      drop-shadow(0 0 24px rgba(125, 223, 255, 0.3))
+      drop-shadow(0 0 54px rgba(189, 167, 255, 0.16))
+      drop-shadow(0 28px 64px rgba(0, 0, 0, 0.52));
+  }
+
+  10% {
+    filter:
+      drop-shadow(0 0 34px rgba(125, 223, 255, 0.44))
+      drop-shadow(0 0 70px rgba(189, 167, 255, 0.24))
+      drop-shadow(0 32px 72px rgba(0, 0, 0, 0.56));
+  }
+
+  28% {
+    filter:
+      drop-shadow(0 0 42px rgba(125, 223, 255, 0.48))
+      drop-shadow(0 0 82px rgba(255, 175, 208, 0.22))
+      drop-shadow(0 34px 78px rgba(0, 0, 0, 0.58));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

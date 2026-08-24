@@ -1,0 +1,81 @@
+/* Detail page hero, cover, prose and text panels. */
+
+.page-hero {
+  max-width: 760px;
+  padding: clamp(3rem, 8vw, 6rem) 0 clamp(1.5rem, 4vw, 3rem);
+}
+
+.page-hero h1 {
+  max-width: none;
+  font-size: clamp(3.2rem, 9vw, 6.5rem);
+  line-height: 0.9;
+}
+
+.detail-hero {
+  padding-top: clamp(2rem, 5vw, 4rem);
+}
+
+.detail-cover {
+  width: min(100%, 900px);
+  aspect-ratio: 16 / 7;
+  margin: 1rem 0 0;
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.26);
+}
+
+/* Poster-only entries show the artwork at poster size instead of stretching a
+   portrait image across the full-width 16/7 banner. Must follow .detail-cover
+   so it wins at equal specificity. */
+.detail-cover.detail-cover-poster {
+  width: min(100%, 340px);
+  aspect-ratio: 2 / 3;
+}
+
+.back-link {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 1rem;
+  color: var(--color-prism-ice);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.back-link:hover {
+  color: var(--color-prism-cyan);
+}
+
+.text-panel {
+  padding: clamp(1.1rem, 3vw, 1.6rem);
+}
+
+.text-panel h2,
+.text-panel h3 {
+  margin-bottom: 0.5rem;
+}
+
+.text-panel p:last-child {
+  margin-bottom: 0;
+}
+
+.prose {
+  max-width: 760px;
+}
+
+.prose h2 {
+  margin-bottom: 0.75rem;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  line-height: 1.05;
+}
+
+.prose p {
+  font-size: 1.02rem;
+}
+
+.prose p + p {
+  margin-top: 1rem;
+}
+
+.external-links {
+  margin-top: 1.5rem;
+}

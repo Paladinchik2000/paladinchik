@@ -1,0 +1,123 @@
+/* Design tokens, reset, element defaults, focus and skip link. */
+
+:root {
+  --color-bg: #01030a;
+  --color-bg-soft: #070b18;
+  --color-text: #f7fbff;
+  --color-muted: #9ba9bd;
+  --color-prism-cyan: #7de7ff;
+  --color-prism-blue: #5b72ff;
+  --color-prism-violet: #b7a6ff;
+  --color-prism-lavender: #ded6ff;
+  --color-prism-pink: #ffb4cf;
+  --color-prism-pearl: #fbfdff;
+  --color-prism-ice: #dff8ff;
+  --color-prism-champagne: #f2dfbf;
+  --color-glass: rgba(222, 235, 255, 0.07);
+  --color-glass-border: rgba(223, 248, 255, 0.17);
+  --font-display:
+    "Inter Tight Variable", "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans:
+    "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --space-page: clamp(1rem, 3vw, 2rem);
+  --radius-card: 8px;
+  --shadow-glow: 0 24px 90px rgba(0, 0, 0, 0.5);
+  --shadow-accent: 0 0 54px rgba(125, 231, 255, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+body::before {
+  display: none;
+  content: "";
+}
+
+body::after {
+  display: none;
+  content: "";
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(223, 248, 255, 0.9);
+  outline-offset: 3px;
+}
+
+/* Off-screen until focused, so keyboard users can jump the navigation. */
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  inset-block-start: 0.6rem;
+  inset-inline-start: 0.6rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(125, 223, 255, 0.4);
+  border-radius: 0.7rem;
+  background: rgba(5, 8, 18, 0.96);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 140ms ease;
+}
+
+/* `:focus`, not `:focus-visible` — a skip link is only ever reached by
+   keyboard, and it must appear however focus arrived. */
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+p,
+h1,
+h2,
+h3 {
+  margin-top: 0;
+  overflow-wrap: anywhere;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+p {
+  color: var(--color-muted);
+}

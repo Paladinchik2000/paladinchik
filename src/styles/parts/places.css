@@ -1,0 +1,141 @@
+/* Leaflet map, markers, popups and the place gallery. */
+
+.places-map-panel {
+  padding: 0.65rem;
+  overflow: hidden;
+}
+
+.places-map {
+  position: relative;
+  min-height: clamp(22rem, 48vw, 34rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at 22% 20%, rgba(125, 223, 255, 0.16), transparent 34%),
+    radial-gradient(circle at 76% 30%, rgba(189, 167, 255, 0.18), transparent 42%),
+    linear-gradient(145deg, rgba(7, 10, 22, 0.98), rgba(5, 6, 12, 0.98));
+}
+
+.places-map-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--color-muted);
+  font-weight: 800;
+}
+
+.places-map .leaflet-tile-pane {
+  filter: grayscale(0.82) invert(0.88) contrast(0.9) brightness(0.72) saturate(0.65);
+}
+
+.places-map .leaflet-control-zoom a {
+  color: var(--color-text);
+  background: rgba(5, 6, 7, 0.84);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.places-map .leaflet-control-attribution {
+  color: var(--color-muted);
+  background: rgba(5, 6, 7, 0.72);
+}
+
+.places-map .leaflet-control-attribution a {
+  color: var(--color-prism-ice);
+}
+
+.archive-map-marker {
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+}
+
+.archive-map-marker span {
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 2px solid rgba(5, 6, 7, 0.78);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-prism-pearl), var(--color-prism-cyan), var(--color-prism-violet));
+  box-shadow:
+    0 0 0 5px rgba(125, 223, 255, 0.18),
+    0 0 26px rgba(189, 167, 255, 0.42);
+}
+
+.places-map .leaflet-popup-content-wrapper,
+.places-map .leaflet-popup-tip {
+  color: var(--color-text);
+  background: rgba(5, 6, 7, 0.92);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(14px);
+}
+
+.places-map .leaflet-popup-content {
+  width: min(16rem, 64vw);
+  margin: 0;
+}
+
+.map-popup-card {
+  padding: 1rem;
+}
+
+.map-popup-card h3 {
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.map-popup-card p {
+  margin-bottom: 0.7rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.map-popup-card .map-popup-location {
+  color: var(--color-prism-ice);
+  font-weight: 800;
+}
+
+.map-popup-card a {
+  color: var(--color-prism-cyan);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.gallery-grid {
+  display: grid;
+  /* Tiles take their photo's own height, so rows align to the top instead of
+     stretching every tile to the tallest one in the row. */
+  align-items: start;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.gallery-tile {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at 22% 20%, rgba(125, 223, 255, 0.18), transparent 36%),
+    radial-gradient(circle at 76% 30%, rgba(189, 167, 255, 0.2), transparent 42%),
+    linear-gradient(145deg, rgba(12, 18, 38, 0.94), rgba(5, 6, 12, 0.96));
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.18);
+}
+
+.gallery-tile::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(180deg, rgba(5, 6, 7, 0.08), rgba(5, 6, 7, 0.46));
+}
+
+.gallery-empty {
+  max-width: 760px;
+}

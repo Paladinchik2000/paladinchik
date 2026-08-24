@@ -1,0 +1,321 @@
+/* Width breakpoints, applied last so they override. */
+
+@media (max-width: 860px) {
+  .archive-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-header {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.55rem;
+    border-radius: 20px;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+  }
+
+  .site-nav {
+    grid-column: 1 / -1;
+    display: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+    justify-content: stretch;
+    padding-top: 0.55rem;
+    border-top: 1px solid rgba(223, 248, 255, 0.12);
+  }
+
+  .site-header[data-menu-open="true"] .site-nav {
+    display: grid;
+  }
+
+  .site-nav a {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .header-actions {
+    gap: 0.35rem;
+  }
+
+  .section-grid,
+  .archive-grid,
+  .gallery-grid,
+  .project-grid,
+  .project-detail-grid,
+  .cv-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero {
+    min-height: 610px;
+    padding-top: 0.6rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(5.3rem, 13vw, 6.4rem);
+  }
+
+  .brand-logo-hero,
+  .brand-logo-hero img {
+    width: min(78vw, 25rem);
+  }
+}
+
+@media (max-width: 620px) {
+  .archive-filters {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    padding: 0.85rem;
+  }
+
+  .site-shell {
+    width: min(100% - 1rem, 1160px);
+  }
+
+  .site-main {
+    padding-top: 0.85rem;
+  }
+
+  .site-header {
+    top: 0.45rem;
+    margin-top: 0.55rem;
+    padding: 0.5rem;
+    border-radius: 18px;
+  }
+
+  .brand-logo-text {
+    display: none;
+  }
+
+  .brand-logo-nav .brand-logo-frame {
+    height: 1.9rem;
+  }
+
+  .brand-logo-nav img {
+    height: 1.78rem;
+    max-width: 3rem;
+  }
+
+  .site-nav a,
+  .header-cv-link,
+  .language-switcher a {
+    min-height: 2.45rem;
+    padding: 0.56rem 0.68rem;
+    font-size: 0.8rem;
+  }
+
+  .site-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mobile-nav-toggle {
+    width: 2.45rem;
+    height: 2.45rem;
+  }
+
+  .section-grid,
+  .archive-grid,
+  .gallery-grid,
+  .project-grid,
+  .project-detail-grid,
+  .cv-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 0.55rem 0 2.8rem;
+  }
+
+  .hero::before {
+    inset-block-start: 2rem;
+    width: 120vw;
+    height: 30rem;
+    filter: blur(10px);
+  }
+
+  .hero-content::before {
+    top: 1rem;
+    width: 112vw;
+    height: 26rem;
+    filter: blur(38px) saturate(1.08);
+    opacity: 0.62;
+  }
+
+  .brand-logo-hero,
+  .brand-logo-hero img {
+    width: min(74vw, 17rem);
+  }
+
+  .hero h1 {
+    max-width: 9ch;
+    font-size: clamp(3.65rem, 16vw, 4.45rem);
+    line-height: 0.86;
+  }
+
+  .hero p {
+    font-size: 1.02rem;
+  }
+
+  .hero-content {
+    transform: none;
+  }
+
+  .hero-actions,
+  .page-actions {
+    width: 100%;
+    gap: 0.6rem;
+  }
+
+  .hero-actions .button,
+  .page-actions .button {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .button {
+    min-height: 3rem;
+    padding: 0.78rem 1rem;
+  }
+
+  .page-hero {
+    padding: 2.2rem 0 1.6rem;
+  }
+
+  .page-hero h1 {
+    font-size: clamp(2.7rem, 14vw, 4rem);
+  }
+
+  .section-block,
+  .page-section {
+    padding: 2.5rem 0;
+  }
+
+  .glass-card {
+    box-shadow:
+      0 12px 34px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(251, 253, 255, 0.07);
+    backdrop-filter: blur(14px) saturate(1.03);
+  }
+
+  .archive-card,
+  .archive-card-body,
+  .project-card-main,
+  .text-panel {
+    padding: 1rem;
+  }
+
+  .archive-entry-card,
+  .project-card {
+    min-height: auto;
+  }
+
+  .archive-cover {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* Poster slots keep their shape at every width. */
+  .archive-cover.archive-cover-poster {
+    aspect-ratio: 2 / 3;
+  }
+
+  .detail-cover {
+    aspect-ratio: 4 / 3;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.22);
+  }
+
+  .detail-cover.detail-cover-poster {
+    aspect-ratio: 2 / 3;
+  }
+
+  .project-card-links {
+    padding: 0 1rem 1rem;
+  }
+
+  .project-card-links .button {
+    width: 100%;
+  }
+
+  .cv-project-list a {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .cv-project-list span {
+    grid-row: auto;
+  }
+
+  .places-map-panel {
+    padding: 0.45rem;
+  }
+
+  .places-map {
+    min-height: 20rem;
+  }
+
+  .places-map .leaflet-control-zoom a {
+    width: 2.35rem;
+    height: 2.35rem;
+    line-height: 2.35rem;
+  }
+
+  .places-map .leaflet-popup-content {
+    width: min(15rem, 72vw);
+  }
+
+}
+
+@media (max-width: 430px) {
+  .site-shell {
+    width: min(100% - 0.8rem, 1160px);
+  }
+
+  .site-header {
+    gap: 0.42rem;
+  }
+
+  .header-actions {
+    gap: 0.25rem;
+  }
+
+  .header-cv-link,
+  .language-switcher a {
+    padding-inline: 0.55rem;
+  }
+
+  .language-switcher {
+    padding: 0.12rem;
+  }
+
+  .brand-logo-hero,
+  .brand-logo-hero img {
+    width: min(72vw, 15.5rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(3.25rem, 15vw, 4rem);
+  }
+
+  .hero p,
+  .page-hero p,
+  .prose p {
+    font-size: 0.98rem;
+  }
+
+  .archive-filters input[type="search"],
+  .archive-filters select,
+  .filter-toggle {
+    min-height: 2.95rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .site-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .site-nav a {
+    justify-content: flex-start;
+  }
+}
