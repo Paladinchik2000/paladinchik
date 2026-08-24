@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import CinemaGenrePage from '../../../components/pages/CinemaGenrePage.astro';
+import { genreSlugs, getGenreLabel } from '../../../lib/genres';
+
+export async function getStaticPaths() {
+  const movies = (await getCollection('movies')).filter((movie) => movie.data.lang === 'en');
+
+  // Only emit a page for a genre that actually has entries, so the sitemap
+  // never advertises an empty listing.
+  return genreSlugs
+    .filter((genre) =>
+      movies.some((movie) => (movie.data.genres ?? []).includes(getGenreLabel(genre, 'en'))),
+    )
+    .map((genre) => ({ params: { genre } }));
+}
+
+const { genre } = Astro.params;
+---
+
+<CinemaGenrePage lang="en" genre={genre as Parameters<typeof getGenreLabel>[0]} />

@@ -4,9 +4,9 @@ import Header from './Header.astro';
 import Footer from './Footer.astro';
 import JsonLd from '../seo/JsonLd.astro';
 import PrismaticShaderBackground from '../ui/PrismaticShaderBackground.astro';
-import type { Locale } from '../../i18n/ui';
+import { locales, type Locale } from '../../i18n/ui';
 import { siteConfig } from '../../data/site';
-import { getAlternateLocaleUrl } from '../../i18n/utils';
+import { getAlternateLocaleUrl, getTranslations } from '../../i18n/utils';
 import { getFallbackSocialImage } from '../../lib/assets';
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '../../lib/images';
 import '../../styles/global.css';
@@ -31,9 +31,13 @@ const {
   type = 'website',
   jsonLd,
 } = Astro.props;
+const t = getTranslations(lang);
 const siteName = siteConfig.siteName;
 const pageTitle = title === siteName ? siteConfig.siteTitle : `${title} | ${siteName}`;
 const normalizedPath = canonicalPath === '/' ? '/' : canonicalPath.replace(/\/$/, '');
+// The animated background is reserved for the landing page; see
+// PrismaticShaderBackground for why.
+const isHome = normalizedPath === '/' || locales.some((locale) => normalizedPath === `/${locale}`);
 const canonicalUrl = new URL(normalizedPath, siteConfig.siteUrl).toString();
 // Entry artwork is re-encoded to a fixed 1200x630 JPEG: social crawlers want a
 // predictable aspect ratio and do not reliably handle avif/webp.
@@ -102,7 +106,8 @@ const alternateUrl = new URL(alternatePath, siteConfig.siteUrl).toString();
     <title>{pageTitle}</title>
   </head>
   <body>
-    <PrismaticShaderBackground />
+    <PrismaticShaderBackground animated={isHome} />
+    <a class="skip-link" href="#main-content">{t.common.skipToContent}</a>
     <div class="site-shell">
       <Header lang={lang} />
       <main id="main-content" class="site-main">

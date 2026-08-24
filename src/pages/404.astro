@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import { sectionKeys } from '../i18n/ui';
+import { getTranslations, localizePath } from '../i18n/utils';
+
+// A single 404 serves both locales: a missing URL cannot be resolved to a
+// language, so the page is bilingual rather than guessing.
+const en = getTranslations('en');
+const ru = getTranslations('ru');
+const sections = sectionKeys.map((key) => ({
+  href: localizePath(`/${key}`, 'en'),
+  en: en.pages[key],
+  ru: ru.pages[key],
+}));
+---
+
+<BaseLayout title="404" description="This page does not exist." canonicalPath="/404">
+  <section class="page-hero">
+    <p class="eyebrow">404</p>
+    <h1>Page not found</h1>
+    <p>This address does not exist, or the entry behind it has been replaced.</p>
+    <p lang="ru">Такой страницы нет, либо запись за ней была заменена.</p>
+    <div class="page-actions">
+      <a class="button button-primary" href="/">Home</a>
+      <a class="button button-secondary" href="/ru">Главная</a>
+    </div>
+  </section>
+
+  <section class="page-section content-list" aria-label="Archive sections">
+    <article class="text-panel glass-card">
+      <h2>Sections</h2>
+      <div class="chip-list">
+        {
+          sections.map((section) => (
+            <a class="chip chip-link" href={section.href}>
+              {section.en} <span lang="ru">{section.ru}</span>
+            </a>
+          ))
+        }
+      </div>
+    </article>
+  </section>
+</BaseLayout>

@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import ArchiveCard from '../ui/ArchiveCard.astro';
+import type { Locale } from '../../i18n/ui';
+import { format, getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { getGenreLabel, type GenreSlug } from '../../lib/genres';
+import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+  genre: GenreSlug;
+}
+
+const { lang, genre } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.cinema;
+const label = getGenreLabel(genre, lang);
+
+const movies = (await getCollection('movies'))
+  .filter((movie) => movie.data.lang === lang && (movie.data.genres ?? []).includes(label))
+  .sort((a, b) => (b.data.rating ?? 0) - (a.data.rating ?? 0) || b.data.year - a.data.year);
+
+const title = format(copy.genrePageTitle, { genre: label });
+const description = format(copy.genrePageDescription, { genre: label });
+const canonicalPath = localizePath(`/cinema/genre/${genre}`, lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: copy.title, url: localizePath('/cinema', lang) },
+  { name: label, url: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={[
+    createCollectionPageSchema({ title, description, url: canonicalPath, lang }),
+    breadcrumbs,
+  ]}
+>
+  <a class="back-link" href={localizePath('/cinema', lang)}>{t.common.back.cinema}</a>
+
+  <section class="page-hero">
+    <p class="eyebrow">{copy.title}</p>
+    <h1>{title}</h1>
+    <p>{description}</p>
+  </section>
+
+  <section class="page-section archive-grid" aria-label={title}>
+    {
+      movies.map((movie) => (
+        <ArchiveCard
+          title={movie.data.title}
+          description={movie.data.description}
+          href={localizePath(`/cinema/${getContentSlug(movie)}`, lang)}
+          eyebrow={movie.data.year}
+          cover={movie.data.cover}
+          coverShape="poster"
+          coverType="FILM"
+          fallbackMeta={[movie.data.year, movie.data.rating && `${movie.data.rating}/10`]}
+          meta={[movie.data.rating && `${movie.data.rating}/10`, movie.data.favorite && t.common.favorite]}
+          chips={movie.data.genres}
+          actionLabel={t.common.readNote}
+          noCoverLabel={t.common.noCover}
+        />
+      ))
+    }
+  </section>
+</BaseLayout>

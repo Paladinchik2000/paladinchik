@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import CinemaGenrePage from '../../../../components/pages/CinemaGenrePage.astro';
+import { genreSlugs, getGenreLabel } from '../../../../lib/genres';
+
+export async function getStaticPaths() {
+  const movies = (await getCollection('movies')).filter((movie) => movie.data.lang === 'ru');
+
+  return genreSlugs
+    .filter((genre) =>
+      movies.some((movie) => (movie.data.genres ?? []).includes(getGenreLabel(genre, 'ru'))),
+    )
+    .map((genre) => ({ params: { genre } }));
+}
+
+const { genre } = Astro.params;
+---
+
+<CinemaGenrePage lang="ru" genre={genre as Parameters<typeof getGenreLabel>[0]} />

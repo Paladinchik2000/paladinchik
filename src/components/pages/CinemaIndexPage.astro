@@ -5,6 +5,7 @@ import ArchiveCard from '../ui/ArchiveCard.astro';
 import ArchiveFilters from '../ui/ArchiveFilters.astro';
 import type { Locale } from '../../i18n/ui';
 import { getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { genreSlugs, getGenreLabel } from '../../lib/genres';
 import { createBreadcrumbSchema, createCollectionPageSchema } from '../../lib/structuredData';
 
 interface Props {
@@ -22,6 +23,14 @@ const movies = (await getCollection('movies'))
 const genres = [...new Set(movies.flatMap((movie) => movie.data.genres ?? []))].sort((a, b) =>
   a.localeCompare(b),
 );
+
+const genreLinks = genreSlugs
+  .map((slug) => {
+    const label = getGenreLabel(slug, lang);
+    return { slug, label, count: movies.filter((m) => (m.data.genres ?? []).includes(label)).length };
+  })
+  .filter((genre) => genre.count > 0)
+  .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 
 const canonicalPath = localizePath('/cinema', lang);
 const gridId = 'cinema-archive';
@@ -51,6 +60,19 @@ const breadcrumbs = createBreadcrumbSchema([
     <h1>{copy.title}</h1>
     <p>{copy.description}</p>
   </section>
+
+  <nav class="genre-links" aria-label={copy.genresHeading}>
+    <p class="eyebrow">{copy.genresHeading}</p>
+    <div class="chip-list">
+      {
+        genreLinks.map((genre) => (
+          <a class="chip chip-link" href={localizePath(`/cinema/genre/${genre.slug}`, lang)}>
+            {genre.label} <span>{genre.count}</span>
+          </a>
+        ))
+      }
+    </div>
+  </nav>
 
   <ArchiveFilters targetId={gridId} groups={genres} labels={copy.filters} />
 

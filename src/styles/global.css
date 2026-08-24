@@ -76,6 +76,30 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
+/* Off-screen until focused, so keyboard users can jump the navigation. */
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  inset-block-start: 0.6rem;
+  inset-inline-start: 0.6rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(125, 223, 255, 0.4);
+  border-radius: 0.7rem;
+  background: rgba(5, 8, 18, 0.96);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 140ms ease;
+}
+
+/* `:focus`, not `:focus-visible` — a skip link is only ever reached by
+   keyboard, and it must appear however focus arrived. */
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 p,
 h1,
 h2,
@@ -824,6 +848,40 @@ a.archive-card:hover {
 
 .chip-list {
   margin-bottom: 1rem;
+}
+
+.genre-links {
+  margin: 0 0 1.2rem;
+}
+
+.genre-links .eyebrow {
+  margin-bottom: 0.5rem;
+}
+
+.genre-links .chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0;
+}
+
+a.chip-link {
+  gap: 0.4rem;
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+a.chip-link span {
+  color: rgba(197, 209, 224, 0.66);
+  font-variant-numeric: tabular-nums;
+}
+
+a.chip-link:hover,
+a.chip-link:focus-visible {
+  border-color: rgba(125, 223, 255, 0.42);
+  background: rgba(125, 223, 255, 0.1);
 }
 
 .chip {

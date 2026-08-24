@@ -62,6 +62,7 @@ export interface Translations {
     footerArchive: string;
     breadcrumbHome: string;
     menu: string;
+    skipToContent: string;
     primaryNavLabel: string;
     languageSwitcherLabel: string;
     homeLinkLabel: string;
@@ -116,7 +117,13 @@ export interface Translations {
     /** `{email}` is replaced with a mailto link. */
     contactBody: string;
   };
-  cinema: CollectionCopy & { filters: ArchiveFilterLabels };
+  cinema: CollectionCopy & {
+    filters: ArchiveFilterLabels;
+    genresHeading: string;
+    /** `{genre}` is replaced with the genre label. */
+    genrePageTitle: string;
+    genrePageDescription: string;
+  };
   library: CollectionCopy & { filters: ArchiveFilterLabels };
   places: CollectionCopy & {
     photosEyebrow: string;
@@ -175,6 +182,7 @@ const en: Translations = {
     footerArchive: 'Personal archive.',
     breadcrumbHome: 'Home',
     menu: 'Menu',
+    skipToContent: 'Skip to content',
     primaryNavLabel: 'Primary navigation',
     languageSwitcherLabel: 'Language switcher',
     homeLinkLabel: 'Nikita Paladi home',
@@ -291,6 +299,9 @@ const en: Translations = {
         title: 'Title A-Z',
       },
     },
+    genresHeading: 'Browse by genre',
+    genrePageTitle: '{genre} films',
+    genrePageDescription: 'Every film in the archive tagged {genre}.',
   },
   library: {
     eyebrow: 'Reading',
@@ -378,6 +389,7 @@ const ru: Translations = {
     footerArchive: 'Личный архив.',
     breadcrumbHome: 'Главная',
     menu: 'Меню',
+    skipToContent: 'Перейти к содержимому',
     primaryNavLabel: 'Основная навигация',
     languageSwitcherLabel: 'Переключатель языка',
     homeLinkLabel: 'Nikita Paladi, на главную',
@@ -497,6 +509,9 @@ const ru: Translations = {
         title: 'По названию',
       },
     },
+    genresHeading: 'По жанрам',
+    genrePageTitle: '{genre}: фильмы',
+    genrePageDescription: 'Все фильмы архива с жанром «{genre}».',
   },
   library: {
     eyebrow: 'Чтение',
