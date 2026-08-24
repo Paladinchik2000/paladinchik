@@ -22,6 +22,9 @@ const projects = (await getCollection('projects'))
   );
 
 const featuredProjects = projects.filter((project) => project.data.featured);
+// "All projects" lists what the featured section did not already show. With
+// everything featured the two sections were rendering identical grids.
+const remainingProjects = projects.filter((project) => !project.data.featured);
 
 type ProjectEntry = (typeof projects)[number];
 
@@ -84,13 +87,17 @@ const breadcrumbs = createBreadcrumbSchema([
     )
   }
 
-  <section class="page-section" aria-labelledby="all-projects">
-    <div class="section-heading">
-      <p class="eyebrow">{copy.archiveEyebrow}</p>
-      <h2 id="all-projects">{copy.allProjectsTitle}</h2>
-    </div>
-    <div class="project-grid">
-      {projects.map((project) => <ProjectCard {...toCardProps(project)} />)}
-    </div>
-  </section>
+  {
+    remainingProjects.length > 0 && (
+      <section class="page-section" aria-labelledby="all-projects">
+        <div class="section-heading">
+          <p class="eyebrow">{copy.archiveEyebrow}</p>
+          <h2 id="all-projects">{copy.allProjectsTitle}</h2>
+        </div>
+        <div class="project-grid">
+          {remainingProjects.map((project) => <ProjectCard {...toCardProps(project)} />)}
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>
