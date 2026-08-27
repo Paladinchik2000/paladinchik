@@ -1,0 +1,222 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layout/BaseLayout.astro';
+import type { Locale } from '../../i18n/ui';
+import { siteConfig } from '../../data/site';
+import { getContentSlug, getTranslations, localizePath } from '../../i18n/utils';
+import { createBreadcrumbSchema, createPersonSchema } from '../../lib/structuredData';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+const copy = t.about;
+
+// Selected work is read from the projects collection rather than duplicated
+// here, so this page cannot drift from the project entries.
+const projects = (await getCollection('projects'))
+  .filter((project) => project.data.lang === lang && project.data.featured)
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+
+const emailAddress = siteConfig.social.email.replace(/^mailto:/, '');
+const [contactBefore, contactAfter] = copy.contactBody.split('{email}');
+
+const canonicalPath = localizePath('/about', lang);
+const breadcrumbs = createBreadcrumbSchema([
+  { name: t.common.breadcrumbHome, url: localizePath('/', lang) },
+  { name: t.pages.about, url: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={t.pages.about}
+  description={copy.metaDescription}
+  lang={lang}
+  canonicalPath={canonicalPath}
+  jsonLd={[createPersonSchema(), breadcrumbs]}
+>
+  <section class="page-hero">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1>{siteConfig.author}</h1>
+    <p class="about-headline">{copy.headline}</p>
+    <p>{copy.intro}</p>
+    <div class="page-actions">
+      <a class="button button-primary" href={localizePath('/cv', lang)}>{copy.viewCv}</a>
+      <a class="button button-secondary" href={localizePath('/projects', lang)}>{copy.viewProjects}</a>
+    </div>
+  </section>
+
+  <section class="page-section about-grid" aria-label={copy.ariaLabel}>
+    <article class="text-panel glass-card about-panel-wide">
+      <h2>{copy.languagesTitle}</h2>
+      <dl class="language-list">
+        {
+          copy.languages.map((language) => (
+            <div class="language-row">
+              <dt>{language.name}</dt>
+              <dd>{language.note}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </article>
+
+    <article class="text-panel glass-card about-panel-wide">
+      <h2>{copy.toolsTitle}</h2>
+      <div class="chip-list">
+        {copy.tools.map((tool) => <span class="chip">{tool}</span>)}
+      </div>
+    </article>
+
+    <article class="text-panel glass-card about-panel-wide">
+      <h2>{copy.workTitle}</h2>
+      <p>{copy.workNote}</p>
+      <div class="about-work">
+        {
+          projects.map((project) => (
+            <a class="about-work-item" href={localizePath(`/projects/${getContentSlug(project)}`, lang)}>
+              <span class="card-eyebrow">
+                {project.data.status ?? t.projects.defaultStatus}
+                {project.data.year ? ` · ${project.data.year}` : ''}
+              </span>
+              <strong>{project.data.title}</strong>
+              {project.data.description && <em>{project.data.description}</em>}
+              <span class="about-work-stack">
+                {(project.data.stack ?? []).slice(0, 5).join(' · ')}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </article>
+
+    {
+      copy.practices.map((practice) => (
+        <article class="text-panel glass-card">
+          <h2>{practice.title}</h2>
+          <p>{practice.body}</p>
+        </article>
+      ))
+    }
+
+    <article class="text-panel glass-card">
+      <h2>{copy.contactTitle}</h2>
+      <p>
+        {contactBefore}<a href={siteConfig.social.email}>{emailAddress}</a>{contactAfter}
+      </p>
+      <div class="external-links">
+        <a class="button button-secondary" href={siteConfig.social.github}>{t.common.github}</a>
+      </div>
+    </article>
+
+    <article class="text-panel glass-card">
+      <h2>{copy.asideTitle}</h2>
+      <p>{copy.asideBody}</p>
+    </article>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+    font-weight: 800;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .about-panel-wide {
+    grid-column: 1 / -1;
+  }
+
+  .language-list {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+  }
+
+  .language-row {
+    display: grid;
+    align-items: baseline;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 0.9rem;
+  }
+
+  .language-row dt {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .language-row dd {
+    margin: 0;
+    font-size: 0.94rem;
+    opacity: 0.76;
+  }
+
+  .about-work {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .about-work-item {
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    padding: 0.9rem;
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-card);
+    background: rgba(255, 255, 255, 0.03);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .about-work-item:hover,
+  .about-work-item:focus-visible {
+    border-color: rgba(125, 223, 255, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .about-work-item strong {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  .about-work-item em {
+    font-size: 0.9rem;
+    font-style: normal;
+    line-height: 1.4;
+    opacity: 0.74;
+  }
+
+  .about-work-stack {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-prism-ice);
+  }
+
+  @media (max-width: 860px) {
+    .about-grid,
+    .about-work {
+      grid-template-columns: 1fr;
+    }
+
+    .language-row {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+    }
+  }
+</style>

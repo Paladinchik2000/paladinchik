@@ -6,8 +6,8 @@ import { createBreadcrumbSchema } from '../../lib/structuredData';
 
 interface Props {
   lang: Locale;
-  /** Which prose page to render; both share the hero + stacked-panels shape. */
-  page: 'about' | 'now';
+  /** Prose pages built from a hero plus stacked text panels. */
+  page: 'now';
 }
 
 const { lang, page } = Astro.props;

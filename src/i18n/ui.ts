@@ -89,9 +89,25 @@ export interface Translations {
   about: {
     metaDescription: string;
     eyebrow: string;
+    headline: string;
     intro: string;
     ariaLabel: string;
-    sections: TextSection[];
+    viewCv: string;
+    viewProjects: string;
+    languagesTitle: string;
+    /** `note` says where the language is actually used, so the list is checkable. */
+    languages: { name: string; note: string }[];
+    toolsTitle: string;
+    tools: string[];
+    workTitle: string;
+    workNote: string;
+    practicesTitle: string;
+    practices: TextSection[];
+    contactTitle: string;
+    /** `{email}` is replaced with a mailto link. */
+    contactBody: string;
+    asideTitle: string;
+    asideBody: string;
   };
   now: {
     metaDescription: string;
@@ -241,25 +257,59 @@ const en: Translations = {
     },
   },
   about: {
-    metaDescription: 'About Nikita Paladi, the personal archive, and the interests behind it.',
-    eyebrow: 'Personal Archive',
+    metaDescription:
+      'Nikita Paladi — web and Android developer. Languages, tools, and the projects behind them.',
+    eyebrow: 'Profile',
+    headline: 'I build small, durable products and ship them.',
     intro:
-      'I am Nikita Paladi, a beginner programmer and prototype creator interested in web development, AI tools, social media, and creative projects.',
-    ariaLabel: 'About sections',
-    sections: [
+      'I work across the web and native Android: a live business site handling real bookings, an offline-first password manager, and this bilingual archive of around 150 entries. I care about the parts that outlast a launch — structure, accessibility, and pages that stay fast as they grow.',
+    ariaLabel: 'Profile',
+    viewCv: 'View CV',
+    viewProjects: 'See projects',
+    languagesTitle: 'Languages',
+    languages: [
+      { name: 'TypeScript', note: 'This archive — strict types across content, routing, and build tooling.' },
+      { name: 'Kotlin', note: 'Obscura — a native Android password manager, Jetpack Compose.' },
+      { name: 'JavaScript', note: 'TireBuddy — a React front end with a live booking flow.' },
+      { name: 'HTML & CSS', note: 'Hand-written layout systems, no UI framework.' },
+      { name: 'GLSL', note: 'The animated background shader on this site.' },
+    ],
+    toolsTitle: 'Tools & frameworks',
+    tools: [
+      'Astro',
+      'React',
+      'Jetpack Compose',
+      'Vite',
+      'Tailwind CSS',
+      'Room + SQLCipher',
+      'Leaflet',
+      'three.js',
+      'Zod',
+      'MDX',
+      'Git',
+      'Gradle',
+    ],
+    workTitle: 'Selected work',
+    workNote: 'Each entry lists its stack, role, and what the work involved.',
+    practicesTitle: 'How I work',
+    practices: [
       {
-        title: 'Background',
-        body: 'This website is my personal archive: a place for projects, films, books, places, and ideas that I want to keep organized and return to over time.',
+        title: 'Bilingual by construction',
+        body: 'Every page exists in English and Russian from a single template, with translations enforced by the type system — a missing one fails the build instead of shipping the wrong language.',
       },
       {
-        title: 'Interests',
-        body: 'I like building small web experiments, testing AI-assisted workflows, thinking about social media, and shaping rough ideas into usable prototypes. Away from the screen, I enjoy table tennis, cycling, and mountain hiking.',
+        title: 'Built to be found',
+        body: 'Structured data, canonical URLs and hreflang pairs, generated sitemaps, and an image pipeline that serves responsive WebP with the right dimensions.',
       },
       {
-        title: 'Current focus',
-        body: 'I am learning by making: improving this archive, practicing front-end structure, and collecting the projects and references that help me see my direction more clearly.',
+        title: 'Light and accessible',
+        body: 'Keyboard focus, skip links, and reduced-motion support as defaults. Most pages ship under 10KB of JavaScript; heavy libraries load only where they are used.',
       },
     ],
+    contactTitle: 'Get in touch',
+    contactBody: 'Available for web development and front-end work. Write to {email}.',
+    asideTitle: 'Away from the screen',
+    asideBody: 'Table tennis, cycling, and mountain hiking. The rest of this archive — films, books, and places — is the non-work half.',
   },
   now: {
     metaDescription: 'A short current-status page for Nikita Paladi and the personal archive.',
@@ -469,25 +519,59 @@ const ru: Translations = {
     },
   },
   about: {
-    metaDescription: 'О Nikita Paladi, личном архиве и интересах, из которых он складывается.',
-    eyebrow: 'Личный архив',
+    metaDescription:
+      'Nikita Paladi — веб- и Android-разработчик. Языки, инструменты и проекты за ними.',
+    eyebrow: 'Профиль',
+    headline: 'Делаю небольшие продукты и довожу их до запуска.',
     intro:
-      'Я Nikita Paladi. Интересуюсь веб-разработкой, AI-инструментами, социальными медиа, творческими проектами и прототипами.',
-    ariaLabel: 'Разделы обо мне',
-    sections: [
+      'Работаю с вебом и нативным Android: рабочий сайт бизнеса с реальными заявками, офлайн-менеджер паролей и этот двуязычный архив примерно на 150 записей. Мне важно то, что живёт дольше запуска: структура, доступность и страницы, которые остаются быстрыми по мере роста.',
+    ariaLabel: 'Профиль',
+    viewCv: 'Смотреть CV',
+    viewProjects: 'Проекты',
+    languagesTitle: 'Языки',
+    languages: [
+      { name: 'TypeScript', note: 'Этот архив — строгая типизация контента, маршрутов и сборки.' },
+      { name: 'Kotlin', note: 'Obscura — нативный менеджер паролей для Android, Jetpack Compose.' },
+      { name: 'JavaScript', note: 'TireBuddy — фронтенд на React с рабочей формой записи.' },
+      { name: 'HTML и CSS', note: 'Собственные системы вёрстки, без UI-фреймворка.' },
+      { name: 'GLSL', note: 'Шейдер анимированного фона на этом сайте.' },
+    ],
+    toolsTitle: 'Инструменты и фреймворки',
+    tools: [
+      'Astro',
+      'React',
+      'Jetpack Compose',
+      'Vite',
+      'Tailwind CSS',
+      'Room + SQLCipher',
+      'Leaflet',
+      'three.js',
+      'Zod',
+      'MDX',
+      'Git',
+      'Gradle',
+    ],
+    workTitle: 'Избранные работы',
+    workNote: 'В каждой записи указаны стек, роль и суть работы.',
+    practicesTitle: 'Как я работаю',
+    practices: [
       {
-        title: 'Контекст',
-        body: 'Этот сайт - мой личный архив: место для проектов, фильмов, книг, поездок и идей, к которым хочется возвращаться.',
+        title: 'Двуязычность по устройству',
+        body: 'Каждая страница существует на английском и русском из одного шаблона, а переводы проверяет система типов: пропущенный ключ ломает сборку, а не уезжает в продакшн.',
       },
       {
-        title: 'Интересы',
-        body: 'Мне интересно делать небольшие веб-эксперименты, пробовать AI в работе, думать о социальных медиа и превращать сырые идеи в понятные прототипы. Вне экрана - настольный теннис, велосипед и походы в горы.',
+        title: 'Чтобы находили',
+        body: 'Микроразметка, канонические адреса и пары hreflang, генерируемые карты сайта и конвейер изображений с адаптивным WebP и корректными размерами.',
       },
       {
-        title: 'Текущий фокус',
-        body: 'Учусь через практику: развиваю этот архив, улучшаю структуру фронтенда и собираю проекты и заметки, которые помогают лучше видеть направление.',
+        title: 'Легко и доступно',
+        body: 'Фокус с клавиатуры, ссылки перехода к содержимому и поддержка reduced-motion по умолчанию. Большинство страниц отдаёт меньше 10 КБ JavaScript, тяжёлые библиотеки грузятся только там, где нужны.',
       },
     ],
+    contactTitle: 'Связаться',
+    contactBody: 'Открыт к веб-разработке и фронтенд-задачам. Пишите на {email}.',
+    asideTitle: 'Вне экрана',
+    asideBody: 'Настольный теннис, велосипед и походы в горы. Остальная часть архива — фильмы, книги и места — это нерабочая половина.',
   },
   now: {
     metaDescription: 'Короткая страница текущего фокуса Nikita Paladi и личного архива.',

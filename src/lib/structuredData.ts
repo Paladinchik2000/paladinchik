@@ -83,16 +83,23 @@ export const createPersonSchema = () => ({
   name: siteConfig.author,
   alternateName: 'Paladinchik',
   url: siteConfig.siteUrl,
+  jobTitle: 'Web and Android developer',
+  email: siteConfig.social.email.replace(/^mailto:/, ''),
   sameAs: [siteConfig.social.github, siteConfig.social.youtube, siteConfig.social.telegram],
+  // Mirrors the languages and tools listed on /about, which are in turn drawn
+  // from the shipped projects — keep the three in step.
   knowsAbout: [
     'Web development',
-    'AI tools',
-    'Social media',
-    'Creative projects',
-    'Prototyping',
-    'Films',
-    'Books',
-    'Travel',
+    'Front-end development',
+    'Android development',
+    'TypeScript',
+    'JavaScript',
+    'Kotlin',
+    'Astro',
+    'React',
+    'Jetpack Compose',
+    'Technical SEO',
+    'Web accessibility',
   ],
 });
 
