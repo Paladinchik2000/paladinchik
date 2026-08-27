@@ -95,8 +95,12 @@ export interface Translations {
     viewCv: string;
     viewProjects: string;
     languagesTitle: string;
-    /** `note` says where the language is actually used, so the list is checkable. */
-    languages: { name: string; note: string }[];
+    /**
+     * `note` says where the language is used, so the list stays checkable.
+     * It is optional: skills that the published projects do not demonstrate
+     * are listed without one rather than given invented provenance.
+     */
+    languages: { name: string; note?: string }[];
     toolsTitle: string;
     tools: string[];
     workTitle: string;
@@ -269,13 +273,18 @@ const en: Translations = {
     languagesTitle: 'Languages',
     languages: [
       { name: 'TypeScript', note: 'This archive — strict types across content, routing, and build tooling.' },
-      { name: 'Kotlin', note: 'Obscura — a native Android password manager, Jetpack Compose.' },
       { name: 'JavaScript', note: 'TireBuddy — a React front end with a live booking flow.' },
+      { name: 'Kotlin', note: 'Obscura — a native Android password manager, Jetpack Compose.' },
+      { name: 'Python' },
+      { name: 'Go' },
+      { name: 'SQL' },
       { name: 'HTML & CSS', note: 'Hand-written layout systems, no UI framework.' },
       { name: 'GLSL', note: 'The animated background shader on this site.' },
     ],
-    toolsTitle: 'Tools & frameworks',
+    toolsTitle: 'Tools & platforms',
     tools: [
+      'Node.js',
+      'AWS',
       'Astro',
       'React',
       'Jetpack Compose',
@@ -288,6 +297,8 @@ const en: Translations = {
       'MDX',
       'Git',
       'Gradle',
+      'CRM systems',
+      'Technical SEO',
     ],
     workTitle: 'Selected work',
     workNote: 'Each entry lists its stack, role, and what the work involved.',
@@ -340,7 +351,22 @@ const en: Translations = {
       'Creative projects, social media ideas, and personal documentation',
     ],
     skillsTitle: 'Skills',
-    skills: ['Astro', 'MDX', 'TypeScript', 'CSS', 'Content modeling', 'Interface design', 'Editing'],
+    skills: [
+      'TypeScript',
+      'JavaScript',
+      'Kotlin',
+      'Python',
+      'Go',
+      'SQL',
+      'HTML & CSS',
+      'Node.js',
+      'AWS',
+      'Astro',
+      'React',
+      'Jetpack Compose',
+      'CRM systems',
+      'Technical SEO',
+    ],
     selectedProjectsTitle: 'Selected Projects',
     timelineTitle: 'Experience / Timeline',
     timeline: [
@@ -531,13 +557,18 @@ const ru: Translations = {
     languagesTitle: 'Языки',
     languages: [
       { name: 'TypeScript', note: 'Этот архив — строгая типизация контента, маршрутов и сборки.' },
-      { name: 'Kotlin', note: 'Obscura — нативный менеджер паролей для Android, Jetpack Compose.' },
       { name: 'JavaScript', note: 'TireBuddy — фронтенд на React с рабочей формой записи.' },
+      { name: 'Kotlin', note: 'Obscura — нативный менеджер паролей для Android, Jetpack Compose.' },
+      { name: 'Python' },
+      { name: 'Go' },
+      { name: 'SQL' },
       { name: 'HTML и CSS', note: 'Собственные системы вёрстки, без UI-фреймворка.' },
       { name: 'GLSL', note: 'Шейдер анимированного фона на этом сайте.' },
     ],
-    toolsTitle: 'Инструменты и фреймворки',
+    toolsTitle: 'Инструменты и платформы',
     tools: [
+      'Node.js',
+      'AWS',
       'Astro',
       'React',
       'Jetpack Compose',
@@ -550,6 +581,8 @@ const ru: Translations = {
       'MDX',
       'Git',
       'Gradle',
+      'CRM-системы',
+      'Техническое SEO',
     ],
     workTitle: 'Избранные работы',
     workNote: 'В каждой записи указаны стек, роль и суть работы.',
@@ -602,7 +635,22 @@ const ru: Translations = {
       'Творческие проекты, идеи для социальных медиа и личная документация',
     ],
     skillsTitle: 'Навыки',
-    skills: ['Astro', 'MDX', 'TypeScript', 'CSS', 'Моделирование контента', 'Дизайн интерфейсов', 'Редактура'],
+    skills: [
+      'TypeScript',
+      'JavaScript',
+      'Kotlin',
+      'Python',
+      'Go',
+      'SQL',
+      'HTML и CSS',
+      'Node.js',
+      'AWS',
+      'Astro',
+      'React',
+      'Jetpack Compose',
+      'CRM-системы',
+      'Техническое SEO',
+    ],
     selectedProjectsTitle: 'Избранные проекты',
     timelineTitle: 'Опыт / Таймлайн',
     timeline: [
